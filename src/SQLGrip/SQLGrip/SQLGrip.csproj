@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Superpower" Version="2.3.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Database\ANSI\Tree\" />
+    <Folder Include="Database\ANSI\Parser\" />
+    <Folder Include="Database\PLSQL\Tree\" />
+    <Folder Include="Database\PLSQL\Parser\" />
+    <Folder Include="Database\TSQL\Tree\" />
+    <Folder Include="Database\TSQL\Parser\" />
+    <Folder Include="Database\TSQL\Tokenizer\" />
+  </ItemGroup>
+
+</Project>
