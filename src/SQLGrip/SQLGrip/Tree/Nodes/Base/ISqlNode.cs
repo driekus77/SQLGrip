@@ -3,7 +3,6 @@ using SQLGrip.Tree.Visitors;
 using Superpower.Model;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SQLGrip.Tree.Nodes
 {
@@ -13,9 +12,11 @@ namespace SQLGrip.Tree.Nodes
 
         string Name { get;  }
 
+        Type NodeType { get; }
+
 
         Token<SqlToken> CapturedToken { get; }
-
+        TextSpan NodeText { get; set; }
 
         ISqlNode Parent { get; set; }
 
@@ -25,14 +26,10 @@ namespace SQLGrip.Tree.Nodes
         ISqlNode Named(string name);
 
 
-        ISqlNode FindFirstByType<FT>(bool deep = false) where FT : ISqlNode;
-        ISqlNode FindFirstNotByType<FT>(bool deep = false) where FT : ISqlNode;
+        bool IsNodeType(Type other);
+        bool IsNodeType<MT>();
 
-
-        IEnumerable<ISqlNode> FindAllByType<FT>(bool deep = false) where FT : ISqlNode;
-        IEnumerable<ISqlNode> FindAllNotByType<FT>(bool deep = false) where FT : ISqlNode;
-
-
+        
 
         ISqlNode AddChildren(params ISqlNode[] children);
 

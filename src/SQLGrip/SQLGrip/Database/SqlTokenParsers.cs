@@ -92,9 +92,9 @@ namespace SQLGrip.Database
         {
             WS = Token.EqualTo(SqlToken.WhiteSpace).Select(x => SqlNodeFactory.CaptureToken<SqlWhitespaceNode>(x));
 
-            Comma = Token.EqualTo(SqlToken.Comma).Select(x => SqlNodeFactory.CaptureToken<SqlSpecialCharNode>(x));
+            Comma = Token.EqualTo(SqlToken.Comma).Select(x => SqlNodeFactory.CaptureToken<SqlSpecialCharactersNode>(x));
 
-            Period = Token.EqualTo(SqlToken.Period).Select(x => SqlNodeFactory.CaptureToken<SqlSpecialCharNode>(x));
+            Period = Token.EqualTo(SqlToken.Period).Select(x => SqlNodeFactory.CaptureToken<SqlSpecialCharactersNode>(x));
         }
 
 

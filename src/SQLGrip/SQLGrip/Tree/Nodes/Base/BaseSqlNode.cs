@@ -3,7 +3,7 @@ using SQLGrip.Tree.Visitors;
 using Superpower.Model;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace SQLGrip.Tree.Nodes
 {
@@ -15,6 +15,8 @@ namespace SQLGrip.Tree.Nodes
         public long Id { get; protected set; } = 0;
 
         public string Name { get; protected set; }
+
+        public abstract Type NodeType { get; }
 
 
         public Token<SqlToken> CapturedToken { get; protected set; }
@@ -30,11 +32,12 @@ namespace SQLGrip.Tree.Nodes
         {
             Id = Tig++;
             CapturedToken = Token<SqlToken>.Empty;
+            Name = NodeType.Name.Substring(4, NodeType.Name.Length - 8);
         }
 
         protected BaseSqlNode(Token<SqlToken> capturedToken)
+            : this()
         {
-            Id = Tig++;
             CapturedToken = capturedToken;
         }
 
@@ -49,6 +52,33 @@ namespace SQLGrip.Tree.Nodes
         }
 
 
+        public TextSpan NodeText
+        {
+            get {
+                ISqlNode firstTextNode = this;
+                while (firstTextNode.Children.Any() && !firstTextNode.CapturedToken.HasValue)
+                {
+                    firstTextNode = firstTextNode.Children.FirstOrDefault();
+                }
+
+                ISqlNode lastTextNode = this;
+                while (lastTextNode.Children.Any() && !lastTextNode.CapturedToken.HasValue)
+                {
+                    lastTextNode = lastTextNode.Children.LastOrDefault();
+                }
+
+                return new TextSpan(
+                        firstTextNode.CapturedToken.Span.Source, 
+                        firstTextNode.CapturedToken.Span.Position, 
+                        lastTextNode.CapturedToken.Span.Position.Absolute - firstTextNode.CapturedToken.Span.Position.Absolute + lastTextNode.CapturedToken.Span.Length);
+            }
+
+            set
+            {
+                //TODO
+            }
+        }
+        
 
         public virtual ISqlNode AddChildren(params ISqlNode[] children)
         {
@@ -65,109 +95,14 @@ namespace SQLGrip.Tree.Nodes
         }
 
 
-
-        public ISqlNode FindFirstByType<FT>(bool deep = false) where FT : ISqlNode
+        public virtual bool IsNodeType(Type other)
         {
-            Type ftType = typeof(FT);
-
-            foreach (var child in Children)
-            {
-                if (ftType.IsInstanceOfType(child))
-                {
-                    return child;
-                }
-
-                if (deep)
-                {
-                    var recursiveResult = child.FindFirstByType<FT>(deep);
-
-                    if ( recursiveResult != null )
-                    {
-                        return recursiveResult;
-                    }
-                }
-            }
-
-            return null;
+            return NodeType.Equals(other);
         }
 
-        public ISqlNode FindFirstNotByType<FT>(bool deep = false) where FT : ISqlNode
+        public virtual bool IsNodeType<MT>()
         {
-            Type ftType = typeof(FT);
-
-            foreach (var child in Children)
-            {
-                if (!ftType.IsInstanceOfType(child))
-                {
-                    return child;
-                }
-
-                if (deep)
-                {
-                    var recursiveResult = child.FindFirstNotByType<FT>(deep);
-
-                    if (recursiveResult != null)
-                    {
-                        return recursiveResult;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-
-
-        public IEnumerable<ISqlNode> FindAllByType<FT>(bool deep = false) where FT : ISqlNode
-        {
-            Type ftType = typeof(FT);
-            var result = new List<ISqlNode>();
-
-            foreach (var child in Children)
-            {
-                if (ftType.IsInstanceOfType(child))
-                {
-                    result.Add(child);
-                }
-
-                if (deep)
-                {
-                    var recursiveResult = child.FindAllByType<FT>(deep);
-
-                    if (recursiveResult != null)
-                    {
-                        result.AddRange(recursiveResult);
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public IEnumerable<ISqlNode> FindAllNotByType<FT>(bool deep = false) where FT : ISqlNode
-        {
-            Type ftType = typeof(FT);
-            var result = new List<ISqlNode>();
-
-            foreach (var child in Children)
-            {
-                if (!ftType.IsInstanceOfType(child))
-                {
-                    result.Add(child);
-                }
-
-                if (deep)
-                {
-                    var recursiveResult = child.FindAllNotByType<FT>(deep);
-
-                    if (recursiveResult != null)
-                    {
-                        result.AddRange(recursiveResult);
-                    }
-                }
-            }
-
-            return result;
+            return NodeType.Equals(typeof(MT));
         }
 
 

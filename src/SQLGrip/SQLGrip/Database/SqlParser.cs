@@ -8,18 +8,25 @@ namespace SQLGrip.Database
 {
     public class SqlParser
     {
+        SqlTokenizer SqlTokenizer { get; }
+
+        SqlTokenParsers SqlTokenParsers { get; }
+
 
 
 
         public SqlParser()
         {
-
+            SqlTokenizer = new SqlTokenizer();
+            SqlTokenParsers = new SqlTokenParsers();
         }
 
 
-        public ISqlNode Parse(TokenList<SqlToken> tokenList)
+        public ISqlStatementNode Parse(string input)
         {
-            return null;
+            var tokens = SqlTokenizer.Tokenize(input);
+
+            return SqlTokenParsers.DoParse(tokens);
         }
     }
 }

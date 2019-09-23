@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using SQLGrip.Database;
-using SQLGrip.Keyword;
-using SQLGrip.Tree.Visitors;
 using Superpower.Model;
 
 namespace SQLGrip.Tree.Nodes
 {
-    public class SqlSpecialCharNode : BaseSqlNode, ISqlSpecialCharactersNode
+    public class SqlSpecialCharactersNode : BaseSqlNode, ISqlSpecialCharactersNode
     {
-        public SqlSpecialCharNode(Token<SqlToken> capturedToken)
+        public override Type NodeType => typeof(ISqlSpecialCharactersNode);
+
+        public SqlSpecialCharactersNode(Token<SqlToken> capturedToken)
             : base(capturedToken)
         {
-            Name = "CHARS";
         }
     }
 }

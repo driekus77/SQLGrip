@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SQLGrip.Database;
-using SQLGrip.Tree.Visitors;
-using Superpower.Model;
 
 namespace SQLGrip.Tree.Nodes
 {
-    public class SqlTableExpressionListNode : BaseSqlNode, ISqlExpressionListNode
+    public class SqlTableExpressionListNode : BaseSqlNode, ISqlTableExpressionListNode
     {
-        public SqlTableExpressionListNode()
-        {
-            Name = "TABLE-EXPRESSION-LIST";
-        }
+        public override Type NodeType => typeof(ISqlTableExpressionListNode);
+
     }
 }

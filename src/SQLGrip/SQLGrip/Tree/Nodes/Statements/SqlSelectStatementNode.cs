@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using SQLGrip.Database;
-using SQLGrip.Tree.Visitors;
-using Superpower.Model;
 
 namespace SQLGrip.Tree.Nodes
 {
     public class SqlSelectStatementNode : BaseSqlNode, ISqlSelectStatementNode
     {
+        public override Type NodeType => typeof(ISqlSelectStatementNode);
+
+
         public IList<ISqlNode> FlatNodeTree { get; set; }
 
         public ISqlSelectClauseNode SelectClause => Children[0] as ISqlSelectClauseNode;
@@ -21,9 +20,6 @@ namespace SQLGrip.Tree.Nodes
 
         public ISqlOrderByClauseNode OrderByClause => throw new NotImplementedException();
 
-        public SqlSelectStatementNode()
-        {
-            Name = "SELECT-STATEMENT";
-        }
+
     }
 }

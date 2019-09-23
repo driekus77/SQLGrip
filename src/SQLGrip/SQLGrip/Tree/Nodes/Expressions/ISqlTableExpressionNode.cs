@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SQLGrip.Tree.Nodes
 {
-    public abstract class BaseSqlClauseNode : BaseSqlNode, ISqlClauseNode
+    public interface ISqlTableExpressionNode : ISqlExpressionNode
     {
 
     }
