@@ -11,8 +11,9 @@ Idea's what this library can become:
 - ...
 
 Parse Example (From UnitTests):
-    var stmnt = Parser.Parse("select hello AS h, by As b, seeya as s from greetings g, people p");
 
+    var stmnt = Parser.Parse("select hello AS h, by As b, seeya as s from greetings g, people p");
+    
     var node = stmnt.FirstOrDefault(x => x.IsNodeType<ISqlColumnExpressionListNode>(), true); // true is deep searching into node tree
     ...
 
