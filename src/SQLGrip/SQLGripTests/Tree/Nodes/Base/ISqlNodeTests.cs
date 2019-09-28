@@ -7,7 +7,7 @@ using Xunit;
 
 namespace SQLGripTests.Tree.Nodes.Base
 {
-    public class SqlTokenTests
+    public class SqlStatementNodeTests
     {
         SqlParser Parser { get; } = new SqlParser();
 
@@ -18,8 +18,10 @@ namespace SQLGripTests.Tree.Nodes.Base
             Assert.NotNull(stmnt);
 
             ISqlNode nodes = stmnt.FirstOrDefault(x => x.IsNodeType<ISqlColumnExpressionListNode>(), true);
+            Assert.Equal("hello AS h, by As b, seeya as s ", nodes.NodeText);
 
-            Assert.Equal("hello AS h, by As b, seeya as s ", nodes.NodeText.ToStringValue());
+            ISqlNode node = nodes.FirstOrDefault(x => x.IsNodeType<ISqlColumnExpressionNode>(), true);
+            Assert.Equal("hello AS h", node.NodeText);
         }
 
 

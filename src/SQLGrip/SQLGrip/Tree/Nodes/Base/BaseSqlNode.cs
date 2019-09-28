@@ -1,5 +1,6 @@
 ﻿using SQLGrip.Database;
 using SQLGrip.Tree.Visitors;
+using Superpower;
 using Superpower.Model;
 using System;
 using System.Collections.Generic;
@@ -52,9 +53,10 @@ namespace SQLGrip.Tree.Nodes
         }
 
 
-        public TextSpan NodeText
+        public string NodeText
         {
-            get {
+            get
+            {
                 ISqlNode firstTextNode = this;
                 while (firstTextNode.Children.Any() && !firstTextNode.CapturedToken.HasValue)
                 {
@@ -67,31 +69,11 @@ namespace SQLGrip.Tree.Nodes
                     lastTextNode = lastTextNode.Children.LastOrDefault();
                 }
 
-                return new TextSpan(
-                        firstTextNode.CapturedToken.Span.Source, 
-                        firstTextNode.CapturedToken.Span.Position, 
+                return 
+                        firstTextNode.CapturedToken.Span.Source.Substring(
+                        firstTextNode.CapturedToken.Span.Position.Absolute,
                         lastTextNode.CapturedToken.Span.Position.Absolute - firstTextNode.CapturedToken.Span.Position.Absolute + lastTextNode.CapturedToken.Span.Length);
             }
-
-            set
-            {
-                //TODO
-            }
-        }
-        
-
-        public virtual ISqlNode AddChildren(params ISqlNode[] children)
-        {
-            foreach (var child in children)
-            {
-                if (child != null)
-                {
-                    child.Parent = this;
-                    Children.Add(child);
-                }
-            }
-
-            return this;
         }
 
 
@@ -106,7 +88,7 @@ namespace SQLGrip.Tree.Nodes
         }
 
 
-        public virtual void Visit(IVisitor visitor)
+        public virtual void Accept(IVisitor visitor)
         {
             visitor.Visit(this);
         }

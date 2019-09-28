@@ -1,5 +1,6 @@
 ﻿using System;
 using SQLGrip.Database;
+using Superpower;
 using Superpower.Model;
 
 namespace SQLGrip.Tree.Nodes

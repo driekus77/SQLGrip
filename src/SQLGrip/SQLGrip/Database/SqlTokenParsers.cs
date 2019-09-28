@@ -1,4 +1,5 @@
 ﻿using SQLGrip.Tree.Nodes;
+using SQLGrip.Tree.Extensions;
 using Superpower;
 using Superpower.Model;
 using Superpower.Parsers;
@@ -72,6 +73,7 @@ namespace SQLGrip.Database
 
 
         protected ISqlNodeFactory SqlNodeFactory { get; }
+
 
         public SqlTokenParsers(ISqlNodeFactory sqlNodeFactory = null)
         {
@@ -179,7 +181,11 @@ namespace SQLGrip.Database
                     ).OptionalOrDefault()
                     from columnAlias in SelectClauseColumnExpressionAlias
                     from ws3 in WS.OptionalOrDefault()
-                    select colExpr.AddChildren(ws, optAs?.Item1, optAs?.Item2, columnAlias, ws3)
+                    select colExpr.AddChildren(ws,
+                                                     optAs?.Item1,
+                                                     optAs?.Item2,
+                                                     columnAlias,
+                                                     ws3)
                         ).OptionalOrDefault()
                 select colExpr
                 .Named("select-column-expression");

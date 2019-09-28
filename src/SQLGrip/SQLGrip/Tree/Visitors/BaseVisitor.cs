@@ -10,7 +10,7 @@ namespace SQLGrip.Tree.Visitors
         public void Visit<FTNode>(FTNode node)
             where FTNode : ISqlNode
         {
-            node.Visit(this);
+            throw new NotSupportedException("Visitors not allowed yet!");
         }
 
     }
