@@ -1,5 +1,6 @@
 ﻿using SQLGrip.Tree.Nodes;
 using SQLGrip.Tree.Nodes.Statements;
+using SQLGrip.Tree.Extensions;
 using Superpower;
 using Superpower.Model;
 using Superpower.Parsers;

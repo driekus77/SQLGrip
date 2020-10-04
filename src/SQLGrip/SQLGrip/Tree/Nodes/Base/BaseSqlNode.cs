@@ -75,11 +75,6 @@ namespace SQLGrip.Tree.Nodes
                         firstTextNode.CapturedToken.Span.Position,
                         lastTextNode.CapturedToken.Span.Position.Absolute - firstTextNode.CapturedToken.Span.Position.Absolute + lastTextNode.CapturedToken.Span.Length);
             }
-
-            set
-            {
-                //TODO
-            }
         }
 
 

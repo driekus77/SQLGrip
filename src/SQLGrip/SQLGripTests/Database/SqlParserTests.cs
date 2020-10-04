@@ -16,10 +16,10 @@ namespace SQLGripTests.Database
         [Fact]
         public void SimpleTest()
         {
-            ISqlStatementNode stmnt = Parser.Parse("select hello AS h, by As b, seeya as s from greetings g, people p");
+            var stmnt = Parser.Parse("select hello AS h, by As b, seeya as s from greetings g, people p");
             Assert.NotNull(stmnt);
 
-            ISqlNode nodes = stmnt.FirstOrDefault(x => x.IsNodeType<ISqlColumnExpressionListNode>(), true);
+            var nodes = stmnt.FirstOrDefault(x => x.IsNodeType<ISqlColumnExpressionListNode>(), true);
             Assert.NotNull(nodes);
             Assert.NotEmpty(nodes.Children);
             Assert.Equal(7, nodes.Children.Count);

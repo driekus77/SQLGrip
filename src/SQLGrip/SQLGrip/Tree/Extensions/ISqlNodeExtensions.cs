@@ -8,6 +8,22 @@ namespace SQLGrip.Tree.Extensions
     public static class ISqlNodeExtensions
     {
 
+        public static ISqlNode AddChildren(this ISqlNode source, params ISqlNode[] children)
+        {
+            foreach (var child in children)
+            {
+                if (child != null)
+                {
+                    child.Parent = source;
+                    source.Children.Add(child);
+                }
+            }
+
+            return source;
+        }
+
+
+
         public static ISqlNode FirstOrDefault(this ISqlNode source, Func<ISqlNode, bool> predicate, bool deep = false)
         {
             foreach (ISqlNode child in source.Children)

@@ -9,7 +9,6 @@ namespace SQLGrip.Tree.Nodes
     {
         public override Type NodeType => typeof(ISqlKeywordNode);
 
-
         public SqlKeywordNode(Token<SqlToken> capturedToken)
             : base(capturedToken)
         {
