@@ -1,4 +1,6 @@
 ﻿using System;
+using SQLGrip.Database;
+using Superpower;
 
 namespace SQLGrip.Tree.Nodes
 {

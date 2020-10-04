@@ -1,4 +1,5 @@
 ﻿using SQLGrip.Tree.Nodes;
+using SQLGrip.Tree.Nodes.Statements;
 using Superpower;
 using Superpower.Model;
 using Superpower.Parsers;
@@ -64,7 +65,16 @@ namespace SQLGrip.Database
         public TokenListParser<SqlToken, ISqlFromClauseNode> FromClause { get; protected set; }
 
 
+        // WhereClause Parsers
+        public TokenListParser<SqlToken, ISqlNode> WhereClauseTextLiteral {get;protected set;}
+        public TokenListParser<SqlToken, ISqlNode> WhereClauseLeftPart {get; protected set; }
+        public TokenListParser<SqlToken, ISqlNode> WhereClauseOperator  {get; protected set; }
+        public TokenListParser<SqlToken, ISqlNode> WhereClauseRightPart  {get; protected set; }
+        public TokenListParser<SqlToken, ISqlNode> WhereClauseExpression  {get; protected set; }
+        public TokenListParser<SqlToken, ISqlNode> WhereClauseExpressionOperands  {get; protected set; }
+        public TokenListParser<SqlToken, ISqlNode> WhereClauseExpressionList  {get; protected set; }
         public TokenListParser<SqlToken, ISqlWhereClauseNode> WhereClause { get; protected set; }
+
 
         public TokenListParser<SqlToken, ISqlSelectStatementNode> SelectStatement { get; protected set; }
 
@@ -72,6 +82,7 @@ namespace SQLGrip.Database
 
 
         protected ISqlNodeFactory SqlNodeFactory { get; }
+
 
         public SqlTokenParsers(ISqlNodeFactory sqlNodeFactory = null)
         {
@@ -179,7 +190,7 @@ namespace SQLGrip.Database
                     ).OptionalOrDefault()
                     from columnAlias in SelectClauseColumnExpressionAlias
                     from ws3 in WS.OptionalOrDefault()
-                    select colExpr.AddChildren(ws, optAs?.Item1, optAs?.Item2, columnAlias, ws3)
+                    select SqlNodeFactory.Capture<SqlColumnExpressionNode>(ws, optAs?.Item1, optAs?.Item2, columnAlias, ws3)
                         ).OptionalOrDefault()
                 select colExpr
                 .Named("select-column-expression");
@@ -255,6 +266,77 @@ namespace SQLGrip.Database
 
 
             // WhereClause
+            WhereClauseTextLiteral = (
+                from quoteStart in Token.EqualTo(SqlToken.Quote)
+                from txt in Token.EqualTo(SqlToken.Identifier)
+                from quoteEnd in Token.EqualTo(SqlToken.Quote)
+                select SqlNodeFactory.CaptureToken<SqlIdentifierNode>(txt)
+            ).Named("whereclause-textliteral");
+
+            WhereClauseLeftPart = (
+                from txt in WhereClauseTextLiteral
+                select txt )
+                .Try()
+                .Or(
+                    from txt in Token.EqualTo(SqlToken.Identifier)
+                    select SqlNodeFactory.CaptureToken<SqlIdentifierNode>(txt) )
+                .Select(x => x)
+                .Named("where-leftpart-name");
+
+            WhereClauseOperator = 
+                Token.EqualTo(SqlToken.Equal).Try()
+                .Or(Token.EqualTo(SqlToken.GreaterThan)).Try()
+                .Or(Token.EqualTo(SqlToken.GreaterThanOrEqual)).Try()
+                .Or(Token.EqualTo(SqlToken.LessThan)).Try()
+                .Or(Token.EqualTo(SqlToken.LessThanOrEqual)).Try()
+                .Or(Token.EqualTo(SqlToken.Like)).Try()
+                .Or(Token.EqualTo(SqlToken.NotEqual))
+                .Select(x => SqlNodeFactory.CaptureToken<SqlKeywordNode>(x))
+                .Named("where-operator-name");
+                
+            WhereClauseRightPart = (
+                    from txt in Token.EqualTo(SqlToken.String)
+                    select SqlNodeFactory.CaptureToken<SqlIdentifierNode>(txt) )
+                .Try()
+                .Or(
+                    from txt in Token.EqualTo(SqlToken.Identifier)
+                    select SqlNodeFactory.CaptureToken<SqlIdentifierNode>(txt) )
+                .Select(x => x)
+                .Named("where-rightpart-name");
+
+            
+            WhereClauseExpression = (
+                from wclp in WhereClauseLeftPart
+                from ws1 in WS
+                from wcop in WhereClauseOperator
+                from ws2 in WS
+                from wcrp in WhereClauseRightPart
+                select SqlNodeFactory.CaptureBinary<SqlColumnExpressionNode>(wcop, wclp, wcrp))
+                .Named("where-expression");
+
+            WhereClauseExpressionOperands = 
+                Token.EqualTo(SqlToken.And).Try()
+                .Or(Token.EqualTo(SqlToken.Or)).Try()
+                .Or(Token.EqualTo(SqlToken.Not))
+                .Select(x => SqlNodeFactory.CaptureToken<SqlColumnExpressionNode>(x))
+                .Named("where-operands");
+
+            WhereClauseExpressionList = (
+                from expr1 in WhereClauseExpression
+                from ws1 in WS
+                from operands in WhereClauseExpressionOperands.OptionalOrDefault()
+                from ws2 in WS.OptionalOrDefault()
+                from expr2 in WhereClauseExpression.OptionalOrDefault()
+                select SqlNodeFactory.Capture<SqlColumnExpressionNode>(expr1, ws1, operands, ws2, expr2))
+                .Named("where-expression-list");
+
+            WhereClause = (
+                from kw in Where
+                from ws1 in WS
+                from exprList in WhereClauseExpressionList.Many()
+                select (ISqlWhereClauseNode)SqlNodeFactory.CaptureClause<SqlWhereClauseNode>(exprList))
+                .Named("whereclause");
+
 
 
             // GroupByClause
@@ -266,15 +348,20 @@ namespace SQLGrip.Database
             // SelectStatement
             SelectStatement =
                 from selectClause in SelectClause
+                from ws1 in WS.OptionalOrDefault()
                 from fromClause in FromClause
-                select (ISqlSelectStatementNode)SqlNodeFactory.CaptureStatement<SqlSelectStatementNode>(selectClause, fromClause);
+                from ws2 in WS.OptionalOrDefault()
+                from whereClause in WhereClause
+                select (ISqlSelectStatementNode)SqlNodeFactory.CaptureStatement<SqlSelectStatementNode>(selectClause, fromClause, whereClause);
         }
 
 
         protected void InitStatement()
         {
             Statement = 
+                from ws1 in WS.OptionalOrDefault()
                 from stmnt in SelectStatement
+                from ws2 in WS.OptionalOrDefault()
                 select stmnt;
         }
 

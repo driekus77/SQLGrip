@@ -3,6 +3,7 @@ using Superpower.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SQLGrip.Tree.Nodes.Statements;
 
 namespace SQLGrip.Tree.Nodes
 {

@@ -1,5 +1,6 @@
 using SQLGrip.Database;
 using SQLGrip.Tree.Nodes;
+using SQLGrip.Tree.Nodes.Statements;
 using SQLGrip.Tree.Extensions;
 using System;
 using System.Linq;

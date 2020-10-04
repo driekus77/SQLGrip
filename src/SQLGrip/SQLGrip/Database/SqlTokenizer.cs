@@ -135,8 +135,7 @@ namespace SQLGrip.Database
                     }
                     while (next.HasValue && (char.IsLetterOrDigit(next.Value) || next.Value == '_'));
 
-                    SqlToken keyword;
-                    if (TryGetKeyword(beginIdentifier.Until(next.Location), out keyword))
+                    if (TryGetKeyword(beginIdentifier.Until(next.Location), out SqlToken keyword))
                     {
                         yield return Result.Value(keyword, beginIdentifier, next.Location);
                     }

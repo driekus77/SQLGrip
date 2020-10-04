@@ -1,5 +1,6 @@
 ﻿using SQLGrip.Database;
 using SQLGrip.Tree.Visitors;
+using Superpower;
 using Superpower.Model;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace SQLGrip.Tree.Nodes
 
 
         Token<SqlToken> CapturedToken { get; }
-        TextSpan NodeText { get; set; }
+        TextSpan NodeText { get; }
 
         ISqlNode Parent { get; set; }
 
@@ -29,11 +30,6 @@ namespace SQLGrip.Tree.Nodes
         bool IsNodeType(Type other);
         bool IsNodeType<MT>();
 
-        
-
-        ISqlNode AddChildren(params ISqlNode[] children);
-
-
-        void Visit(IVisitor visitor);
+        void Accept(IVisitor visitor);
     }
 }

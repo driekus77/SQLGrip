@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SQLGrip.Tree.Nodes
+namespace SQLGrip.Tree.Nodes.Statements
 {
     public interface ISqlStatementNode : ISqlNode
     {

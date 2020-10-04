@@ -1,5 +1,6 @@
 ﻿using SQLGrip.Database;
 using SQLGrip.Tree.Visitors;
+using Superpower;
 using Superpower.Model;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace SQLGrip.Tree.Nodes
         }
 
 
+        public virtual TokenListParser<SqlToken, ISqlNode> Parser => throw new NotImplementedException();
 
 
         public ISqlNode Named(string name)
@@ -54,7 +56,8 @@ namespace SQLGrip.Tree.Nodes
 
         public TextSpan NodeText
         {
-            get {
+            get
+            {
                 ISqlNode firstTextNode = this;
                 while (firstTextNode.Children.Any() && !firstTextNode.CapturedToken.HasValue)
                 {
@@ -68,8 +71,8 @@ namespace SQLGrip.Tree.Nodes
                 }
 
                 return new TextSpan(
-                        firstTextNode.CapturedToken.Span.Source, 
-                        firstTextNode.CapturedToken.Span.Position, 
+                        firstTextNode.CapturedToken.Span.Source,
+                        firstTextNode.CapturedToken.Span.Position,
                         lastTextNode.CapturedToken.Span.Position.Absolute - firstTextNode.CapturedToken.Span.Position.Absolute + lastTextNode.CapturedToken.Span.Length);
             }
 
@@ -77,21 +80,6 @@ namespace SQLGrip.Tree.Nodes
             {
                 //TODO
             }
-        }
-        
-
-        public virtual ISqlNode AddChildren(params ISqlNode[] children)
-        {
-            foreach (var child in children)
-            {
-                if (child != null)
-                {
-                    child.Parent = this;
-                    Children.Add(child);
-                }
-            }
-
-            return this;
         }
 
 
@@ -106,7 +94,7 @@ namespace SQLGrip.Tree.Nodes
         }
 
 
-        public virtual void Visit(IVisitor visitor)
+        public virtual void Accept(IVisitor visitor)
         {
             visitor.Visit(this);
         }

@@ -1,4 +1,5 @@
 ﻿using SQLGrip.Tree.Nodes;
+using SQLGrip.Tree.Nodes.Statements;
 using Superpower.Model;
 using System;
 using System.Collections.Generic;
@@ -8,25 +9,19 @@ namespace SQLGrip.Database
 {
     public class SqlParser
     {
-        SqlTokenizer SqlTokenizer { get; }
+        public static SqlTokenizer Tokenizer { get; } = new SqlTokenizer();
 
-        SqlTokenParsers SqlTokenParsers { get; }
+        public static SqlNodeFactory NodeFactory { get; } = new SqlNodeFactory();
 
+        public static SqlTokenParsers TokenParsers { get; } = new SqlTokenParsers(NodeFactory);
 
-
-
-        public SqlParser()
-        {
-            SqlTokenizer = new SqlTokenizer();
-            SqlTokenParsers = new SqlTokenParsers();
-        }
 
 
         public ISqlStatementNode Parse(string input)
         {
-            var tokens = SqlTokenizer.Tokenize(input);
+            var tokens = Tokenizer.Tokenize(input);
 
-            return SqlTokenParsers.DoParse(tokens);
+            return TokenParsers.DoParse(tokens);
         }
     }
 }

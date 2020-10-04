@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using SQLGrip.Database;
+using Superpower;
 
-namespace SQLGrip.Tree.Nodes
+namespace SQLGrip.Tree.Nodes.Statements
 {
     public class SqlSelectStatementNode : BaseSqlNode, ISqlSelectStatementNode
     {
@@ -19,7 +21,6 @@ namespace SQLGrip.Tree.Nodes
         public ISqlGroupByClauseNode GroupByClause => throw new NotImplementedException();
 
         public ISqlOrderByClauseNode OrderByClause => throw new NotImplementedException();
-
 
     }
 }

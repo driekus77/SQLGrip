@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SQLGrip.Tree.Nodes;
+using SQLGrip.Tree.Nodes.Statements;
 
 namespace SQLGrip.Tree.Nodes
 {
