@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SQLGrip.Keyword
 {
-    public interface ISqlKeywordTable
+    public interface SqlKeywordTable
     {
-        ISqlKeywordTable Add(string name, string group, string text);
+        SqlKeywordTable Add(string name, string group, string text);
 
         SqlKeyword GetByName(string name);
         SqlKeyword this[string name] { get; }

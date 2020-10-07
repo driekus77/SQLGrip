@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SQLGrip.Core
+namespace SQLGrip
 {
     public enum Language
     {

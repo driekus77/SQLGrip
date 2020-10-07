@@ -1,16 +1,16 @@
-﻿using SQLGrip.Tree.Nodes.Statements;
-using SQLGrip.Database;
+﻿using SQLGrip.SyntaxTree.Nodes;
+using SQLGrip.ParserTree;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SQLGrip.Core
+namespace SQLGrip
 {
-    public class Statement : IStatement
+    public class Statement
     {
         private readonly SqlParser parser = new SqlParser();
 
-        public ISqlStatementNode ParsedNode {get;internal set;}
+        public SqlStatementNode ParsedNode {get;internal set;}
 
         public Language Language { get; }
 
@@ -25,7 +25,7 @@ namespace SQLGrip.Core
         }
 
 
-        public IStatement Parse()
+        public Statement Parse()
         {
             ParsedNode = parser.Parse(this.Text);
 

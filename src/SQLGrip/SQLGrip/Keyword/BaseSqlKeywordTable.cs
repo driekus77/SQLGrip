@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SQLGrip.Keyword
 {
-    public abstract class BaseSqlKeywordTable : ISqlKeywordTable
+    public abstract class BaseSqlKeywordTable : SqlKeywordTable
     {
         protected IDictionary<string, SqlKeyword> NameToKeywordTable { get; } = new Dictionary<string, SqlKeyword>(StringComparer.InvariantCultureIgnoreCase);
         protected IDictionary<string, SqlKeyword> TextToKeywordTable { get; } = new Dictionary<string, SqlKeyword>(StringComparer.InvariantCultureIgnoreCase);
@@ -12,7 +12,7 @@ namespace SQLGrip.Keyword
         public SqlKeyword this[string name] => NameToKeywordTable[name];
 
 
-        public ISqlKeywordTable Add(string name, string group, string text)
+        public SqlKeywordTable Add(string name, string group, string text)
         {
             SqlKeyword keyword = new SqlKeyword(name, group, text);
 

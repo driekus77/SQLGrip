@@ -1,4 +1,4 @@
-using SQLGrip.Core;
+using SQLGrip;
 using System;
 using Xunit;
 
@@ -9,7 +9,7 @@ namespace SQLGripTests.Core
         [Fact]
         public void SetTextTest()
         {
-            IStatement stmnt = new Statement("Select LastName from Person");
+            var stmnt = new Statement("Select LastName from Person");
 
             Assert.Equal("Select LastName from Person", stmnt.Text);
         }
@@ -17,7 +17,7 @@ namespace SQLGripTests.Core
         [Fact]
         public void SimpleWhereClauseTest()
         {
-            IStatement stmnt = new Statement(@"
+            var stmnt = new Statement(@"
                 Select * 
                 from Person 
                 where LastName = 'Roeland'
