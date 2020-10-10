@@ -5,15 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SQLGrip.ParserTree.ANSI.Version92
+namespace SQLGrip.Parsers.ANSI.Version92
 {
 
     [Language(name: "SQL", dialect: "ANSI", version: "92", subject: "Textparsers")]
     public static class SqlTextParsers
     {
-        static readonly TextParser<SqlToken> LessOrEqual = Span.EqualTo("<=").Value(SqlToken.LessThanOrEqual);
-        static readonly TextParser<SqlToken> GreaterOrEqual = Span.EqualTo(">=").Value(SqlToken.GreaterThanOrEqual);
-        static readonly TextParser<SqlToken> NotEqual = Span.EqualTo("<>").Value(SqlToken.NotEqual);
+        static readonly TextParser<SqlToken> LessOrEqual = Span.EqualTo("<=").Value(SqlToken.LESS_THAN_OR_EQUAL);
+        static readonly TextParser<SqlToken> GreaterOrEqual = Span.EqualTo(">=").Value(SqlToken.GREATER_THAN_OR_EQUAL);
+        static readonly TextParser<SqlToken> NotEqual = Span.EqualTo("<>").Value(SqlToken.NOT_EQUAL);
 
         public readonly static TextParser<SqlToken> CompoundOperator = GreaterOrEqual.Or(LessOrEqual.Try().Or(NotEqual));
 

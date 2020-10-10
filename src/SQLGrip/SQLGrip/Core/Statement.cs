@@ -1,5 +1,5 @@
 ﻿using SQLGrip.SyntaxTree.Nodes;
-using SQLGrip.ParserTree;
+using SQLGrip.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,20 +8,19 @@ namespace SQLGrip
 {
     public class Statement
     {
+
+        /*
         private readonly SqlParser parser = new SqlParser();
 
         public SqlStatementNode ParsedNode {get;internal set;}
-
-        public Language Language { get; }
 
         public string Text { get; set; }
 
 
 
-        public Statement(string text = null, Language language = Language.ANSI)
+        public Statement(string text = null)
         {
             Text = text;
-            Language = language;
         }
 
 
@@ -31,5 +30,6 @@ namespace SQLGrip
 
             return this;
         }
+        */
     }
 }

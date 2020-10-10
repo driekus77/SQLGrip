@@ -1,14 +1,15 @@
-using SQLGrip.ParserTree;
+using SQLGrip.Parsers;
 using SQLGrip.SyntaxTree.Nodes;
 using SQLGrip.SyntaxTree.Extensions;
 using System;
 using System.Linq;
 using Xunit;
 
-namespace SQLGripTests.ParserTree
+namespace SQLGripTests.Parsers.ANSI.Version92
 {
     public class SqlParserTests
     {
+        /*
         SqlParser Parser { get; } = new SqlParser();
 
 
@@ -35,6 +36,6 @@ namespace SQLGripTests.ParserTree
 
         }
 
-
+*/
     }
 }

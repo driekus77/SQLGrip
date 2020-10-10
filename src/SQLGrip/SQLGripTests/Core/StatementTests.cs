@@ -6,6 +6,7 @@ namespace SQLGripTests.Core
 {
     public class StatementTests
     {
+        /*
         [Fact]
         public void SetTextTest()
         {
@@ -31,5 +32,6 @@ namespace SQLGripTests.Core
             //     where LastName = 'Roeland'
             // ", parsedStmnt.ParsedNode.NodeText.ToString());
         }
+        */
     }
 }

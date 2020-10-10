@@ -1,5 +1,5 @@
 ﻿using System;
-using SQLGrip.ParserTree;
+using SQLGrip.Parsers;
 using SQLGrip.SyntaxTree.Nodes;
 using Superpower;
 using Superpower.Model;

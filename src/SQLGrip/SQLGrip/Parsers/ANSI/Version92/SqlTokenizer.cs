@@ -2,12 +2,11 @@
 using Superpower.Model;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using System.Linq;
 
 
-namespace SQLGrip.ParserTree.ANSI.Version92
+namespace SQLGrip.Parsers.ANSI.Version92
 {
 
     [Language(name: "SQL", dialect: "ANSI", version: "92", subject: "Tokenizer")]
@@ -20,16 +19,16 @@ namespace SQLGrip.ParserTree.ANSI.Version92
             SqlToken.AND,
             SqlToken.OR,
             SqlToken.NOT,
-            SqlToken.LeftParen,
-            SqlToken.LeftBracket,
-            SqlToken.Comma,
-            SqlToken.Equal,
-            SqlToken.NotEqual,
+            SqlToken.LEFTPAREN,
+            SqlToken.LEFTBRACKET,
+            SqlToken.COMMA,
+            SqlToken.EQUAL,
+            SqlToken.NOT_EQUAL,
             SqlToken.LIKE,
-            SqlToken.GreaterThan,
-            SqlToken.GreaterThanOrEqual,
-            SqlToken.LessThan,
-            SqlToken.LessThanOrEqual,
+            SqlToken.GREATER_THAN,
+            SqlToken.GREATER_THAN_OR_EQUAL,
+            SqlToken.LESS_THAN,
+            SqlToken.LESS_THAN_OR_EQUAL,
             SqlToken.IN,
             SqlToken.IS
         };
@@ -37,22 +36,22 @@ namespace SQLGrip.ParserTree.ANSI.Version92
 
         static SqlTokenizer()
         {
-            SimpleOps['+'] = SqlToken.Plus;
-            SimpleOps['-'] = SqlToken.Minus;
-            SimpleOps['*'] = SqlToken.Asterisk;
-            SimpleOps['/'] = SqlToken.ForwardSlash;
-            SimpleOps['%'] = SqlToken.Percent;
-            SimpleOps['^'] = SqlToken.Caret;
-            SimpleOps['<'] = SqlToken.LessThan;
-            SimpleOps['>'] = SqlToken.GreaterThan;
-            SimpleOps['='] = SqlToken.Equal;
-            SimpleOps[','] = SqlToken.Comma;
-            SimpleOps['.'] = SqlToken.Period;
-            SimpleOps['('] = SqlToken.LeftParen;
-            SimpleOps[')'] = SqlToken.RightParen;
-            SimpleOps['['] = SqlToken.LeftBracket;
-            SimpleOps[']'] = SqlToken.RightBracket;
-            SimpleOps['?'] = SqlToken.QuestionMark;
+            SimpleOps['+'] = SqlToken.PLUS;
+            SimpleOps['-'] = SqlToken.MINUS;
+            SimpleOps['*'] = SqlToken.ASTERISK;
+            SimpleOps['/'] = SqlToken.FORWARD_SLASH;
+            SimpleOps['%'] = SqlToken.PERCENT;
+            SimpleOps['^'] = SqlToken.CARET;
+            SimpleOps['<'] = SqlToken.LESS_THAN;
+            SimpleOps['>'] = SqlToken.GREATER_THAN;
+            SimpleOps['='] = SqlToken.EQUAL;
+            SimpleOps[','] = SqlToken.COMMA;
+            SimpleOps['.'] = SqlToken.PERIOD;
+            SimpleOps['('] = SqlToken.LEFTPAREN;
+            SimpleOps[')'] = SqlToken.RIGHTPAREN;
+            SimpleOps['['] = SqlToken.LEFTBRACKET;
+            SimpleOps[']'] = SqlToken.RIGHTBRACKET;
+            SimpleOps['?'] = SqlToken.QUESTIONMARK;
         }
 
 
@@ -75,7 +74,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
                     {
                         next = ws.Remainder.ConsumeChar();
                     }
-                    yield return Result.Value(SqlToken.WhiteSpace, ws.Location, ws.Remainder);
+                    yield return Result.Value(SqlToken.WHITESPACE, ws.Location, ws.Remainder);
                 }
                 else if (char.IsDigit(next.Value))
                 {
@@ -83,7 +82,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
                     if (hex.HasValue)
                     {
                         next = hex.Remainder.ConsumeChar();
-                        yield return Result.Value(SqlToken.HexNumber, hex.Location, hex.Remainder);
+                        yield return Result.Value(SqlToken.HEX_NUMBER_NUMERIC, hex.Location, hex.Remainder);
                     }
                     else
                     {
@@ -91,7 +90,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
                         if (!real.HasValue)
                             yield return Result.CastEmpty<TextSpan, SqlToken>(real);
                         else
-                            yield return Result.Value(SqlToken.Number, real.Location, real.Remainder);
+                            yield return Result.Value(SqlToken.NUMBER_NUMERIC, real.Location, real.Remainder);
 
                         next = real.Remainder.ConsumeChar();
                     }
@@ -109,7 +108,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
 
                     next = str.Remainder.ConsumeChar();
 
-                    yield return Result.Value(SqlToken.String, str.Location, str.Remainder);
+                    yield return Result.Value(SqlToken.STRING, str.Location, str.Remainder);
                 }
                 else if (next.Value == '@')
                 {
@@ -127,7 +126,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
                     }
                     else
                     {
-                        yield return Result.Value(SqlToken.BuiltInIdentifier, beginIdentifier, next.Location);
+                        yield return Result.Value(SqlToken.BUILTIN_IDENTIFIER, beginIdentifier, next.Location);
                     }
                 }
                 else if (char.IsLetter(next.Value) || next.Value == '_')
@@ -145,7 +144,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
                     }
                     else
                     {
-                        yield return Result.Value(SqlToken.Identifier, beginIdentifier, next.Location);
+                        yield return Result.Value(SqlToken.IDENTIFIER, beginIdentifier, next.Location);
                     }
                 }
                 else if (next.Value == '/' &&
@@ -156,7 +155,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
                     if (!regex.HasValue)
                         yield return Result.CastEmpty<Unit, SqlToken>(regex);
 
-                    yield return Result.Value(SqlToken.RegularExpression, next.Location, regex.Remainder);
+                    yield return Result.Value(SqlToken.REGULAR_EXPRESSION, next.Location, regex.Remainder);
                     next = regex.Remainder.ConsumeChar();
                 }
                 else
@@ -167,7 +166,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
                         yield return Result.Value(compoundOp.Value, compoundOp.Location, compoundOp.Remainder);
                         next = compoundOp.Remainder.ConsumeChar();
                     }
-                    else if (next.Value < SimpleOps.Length && SimpleOps[next.Value] != SqlToken.None)
+                    else if (next.Value < SimpleOps.Length && SimpleOps[next.Value] != SqlToken.NONE)
                     {
                         yield return Result.Value(SimpleOps[next.Value], next.Location, next.Remainder);
                         next = next.Remainder.ConsumeChar();
@@ -186,22 +185,18 @@ namespace SQLGrip.ParserTree.ANSI.Version92
         {
             return !next.HasValue ||
                    char.IsWhiteSpace(next.Value) ||
-                   next.Value < SimpleOps.Length && SimpleOps[next.Value] != SqlToken.None;
+                   next.Value < SimpleOps.Length && SimpleOps[next.Value] != SqlToken.NONE;
         }
 
 
-        static Dictionary<string, TokenAttribute> TokenTable = null;
-        static Dictionary<string, SqlToken> Keywords = null;
+        static readonly Dictionary<string, TokenAttribute> TokenTable = new Dictionary<string, TokenAttribute>(StringComparer.InvariantCultureIgnoreCase);
+        static readonly Dictionary<string, SqlToken> Keywords = new Dictionary<string, SqlToken>(StringComparer.InvariantCultureIgnoreCase);
 
 
         static void FillTables()
         {
-            if ( TokenTable == null )
+            if ( TokenTable.Count == 0 )
             {
-                // Note: Case Insensitive search/lookup...!
-                TokenTable = new Dictionary<string, TokenAttribute>(StringComparer.InvariantCultureIgnoreCase);
-                Keywords = new Dictionary<string, SqlToken>(StringComparer.InvariantCultureIgnoreCase);
-
                 foreach ( SqlToken enumValue in typeof(SqlToken).GetEnumValues() )
                 {
                     var enumName = enumValue.ToString();
@@ -229,7 +224,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
                 return true;
             }
 
-            keyword = SqlToken.None;
+            keyword = SqlToken.NONE;
             return false;
         }
 

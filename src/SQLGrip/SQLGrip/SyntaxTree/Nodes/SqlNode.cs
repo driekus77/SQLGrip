@@ -1,4 +1,4 @@
-﻿using SQLGrip.ParserTree;
+﻿using SQLGrip.Parsers;
 using SQLGrip.SyntaxTree.Visitors;
 using Superpower;
 using Superpower.Model;

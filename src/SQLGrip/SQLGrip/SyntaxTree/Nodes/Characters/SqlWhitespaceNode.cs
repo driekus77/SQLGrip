@@ -1,5 +1,5 @@
 ﻿using System;
-using SQLGrip.ParserTree;
+using SQLGrip.Parsers;
 using Superpower;
 using Superpower.Model;
 
@@ -10,7 +10,7 @@ namespace SQLGrip.SyntaxTree.Nodes
         public override Type NodeType => typeof(SqlWhitespaceNode);
 
         public static readonly SqlWhitespaceNode Empty = new SqlWhitespaceNode(Token<SqlToken>.Empty);
-        public static readonly SqlWhitespaceNode Space = new SqlWhitespaceNode(new Token<SqlToken>(SqlToken.WhiteSpace, new TextSpan(" ")));
+        public static readonly SqlWhitespaceNode Space = new SqlWhitespaceNode(new Token<SqlToken>(SqlToken.WHITESPACE, new TextSpan(" ")));
 
 
         public SqlWhitespaceNode(Token<SqlToken> capturedToken)

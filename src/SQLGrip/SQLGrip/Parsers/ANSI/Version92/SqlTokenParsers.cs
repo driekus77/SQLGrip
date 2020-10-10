@@ -8,78 +8,96 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SQLGrip.ParserTree.ANSI.Version92
+namespace SQLGrip.Parsers.ANSI.Version92
 {
     public class SqlTokenParsers
     {
 
         // Preserve Whitespace
-        public TokenListParser<SqlToken, SqlNode> WS { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlWhitespaceNode> WHITESPACE_PARSELET = 
+            Token.EqualTo(SqlToken.WHITESPACE).Select(x => new SqlWhitespaceNode(x));
         
-        public TokenListParser<SqlToken, SqlNode> Comma { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Period { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlSpecialCharactersNode> COMMA_PARSELET =
+            Token.EqualTo(SqlToken.COMMA).Select(x => new SqlSpecialCharactersNode(x));
+
+        public static readonly TokenListParser<SqlToken, SqlSpecialCharactersNode> PERIOD_PARSELET =
+            Token.EqualTo(SqlToken.PERIOD).Select(x => new SqlSpecialCharactersNode(x));
+
 
         // Capture operators
-        public TokenListParser<SqlToken, SqlNode> Plus { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Minus { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Asterisk { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> ForwardSlash { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Percent { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Caret { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Lte { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Lt { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Gt { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Gte { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Eq { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Neq { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> PLUS_PARSELET =
+            Token.EqualTo(SqlToken.PLUS).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> MINUS_PARSELET =
+            Token.EqualTo(SqlToken.MINUS).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> ASTERISK_PARSELET =
+            Token.EqualTo(SqlToken.ASTERISK).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> FORWARD_SLASH_PARSELET =
+            Token.EqualTo(SqlToken.FORWARD_SLASH).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> PERCENT_PARSELET  = 
+            Token.EqualTo(SqlToken.PERCENT).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> CARET_PARSELET =
+            Token.EqualTo(SqlToken.CARET).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> LESS_THAN_OR_EQUAL_PARSELET =
+            Token.EqualTo(SqlToken.LESS_THAN_OR_EQUAL).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> LESS_THAN_PARSELET =
+            Token.EqualTo(SqlToken.LESS_THAN).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> GREATER_THAN_PARSELET =
+            Token.EqualTo(SqlToken.GREATER_THAN).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> GREATER_THAN_OR_EQUAL_PARSELET =
+            Token.EqualTo(SqlToken.GREATER_THAN_OR_EQUAL).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> EQUAL_PARSELET =
+            Token.EqualTo(SqlToken.EQUAL).Select(x => new SqlOperatorNode(x));
+        public static readonly TokenListParser<SqlToken, SqlOperatorNode> NOT_EQUAL_PARSELET =
+            Token.EqualTo(SqlToken.NOT_EQUAL).Select(x => new SqlOperatorNode(x));
 
+/*
         // Capture keywords
-        public TokenListParser<SqlToken, SqlNode> And { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Or { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Not { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Like { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> In { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Is { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> As { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> And { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> Or { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> Not { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> Like { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> In { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> Is { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> As { get; protected set; }
 
-        public TokenListParser<SqlToken, SqlNode> Select { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> From { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> Where { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> Select { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> From { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> Where { get; protected set; }
 
 
         // SelectClause Parsers
-        public TokenListParser<SqlToken, SqlNode> SelectClauseSchemaName { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> SelectClauseTableOrAliasName { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> SelectClauseColumnName { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> SelectClauseColumnExpressionAlias { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> SelectClauseColumnExpression { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> SelectClauseColumnExpressionWithOptionalAlias { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> SelectClauseColumnExpressionList { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> SelectClauseSelectList { get; protected set; }
-        public TokenListParser<SqlToken, SqlSelectClauseNode> SelectClause { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> SelectClauseSchemaName { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> SelectClauseTableOrAliasName { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> SelectClauseColumnName { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> SelectClauseColumnExpressionAlias { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> SelectClauseColumnExpression { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> SelectClauseColumnExpressionWithOptionalAlias { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> SelectClauseColumnExpressionList { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> SelectClauseSelectList { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlSelectClauseNode> SelectClause { get; protected set; }
 
         // FromClause Parsers
-        public TokenListParser<SqlToken, SqlNode> FromClauseTableOrViewName { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> FromClauseTableExpressionAlias { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> FromClauseTableExpression { get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> FromClauseTableExpressionList { get; protected set; }
-        public TokenListParser<SqlToken, SqlFromClauseNode> FromClause { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> FromClauseTableOrViewName { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> FromClauseTableExpressionAlias { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> FromClauseTableExpression { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> FromClauseTableExpressionList { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlFromClauseNode> FromClause { get; protected set; }
 
 
         // WhereClause Parsers
-        public TokenListParser<SqlToken, SqlNode> WhereClauseTextLiteral {get;protected set;}
-        public TokenListParser<SqlToken, SqlNode> WhereClauseLeftPart {get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> WhereClauseOperator  {get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> WhereClauseRightPart  {get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> WhereClauseExpression  {get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> WhereClauseExpressionOperands  {get; protected set; }
-        public TokenListParser<SqlToken, SqlNode> WhereClauseExpressionList  {get; protected set; }
-        public TokenListParser<SqlToken, SqlWhereClauseNode> WhereClause { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> WhereClauseTextLiteral {get;protected set;}
+        public static readonly TokenListParser<SqlToken, SqlNode> WhereClauseLeftPart {get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> WhereClauseOperator  {get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> WhereClauseRightPart  {get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> WhereClauseExpression  {get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> WhereClauseExpressionOperands  {get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlNode> WhereClauseExpressionList  {get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlWhereClauseNode> WhereClause { get; protected set; }
 
 
-        public TokenListParser<SqlToken, SqlSelectStatementNode> SelectStatement { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlSelectStatementNode> SelectStatement { get; protected set; }
 
-        public TokenListParser<SqlToken, SqlStatementNode> Statement { get; protected set; }
+        public static readonly TokenListParser<SqlToken, SqlStatementNode> Statement { get; protected set; }
 
 
 
@@ -96,31 +114,7 @@ namespace SQLGrip.ParserTree.ANSI.Version92
             InitStatement();
         }
 
-        protected void InitMisc()
-        {
-            WS = Token.EqualTo(SqlToken.WhiteSpace).Select(x => SqlNodeFactory.CaptureToken<SqlWhitespaceNode>(x));
 
-            Comma = Token.EqualTo(SqlToken.Comma).Select(x => SqlNodeFactory.CaptureToken<SqlSpecialCharactersNode>(x));
-
-            Period = Token.EqualTo(SqlToken.Period).Select(x => SqlNodeFactory.CaptureToken<SqlSpecialCharactersNode>(x));
-        }
-
-
-        protected void InitOperators()
-        {
-            Plus = Token.EqualTo(SqlToken.Plus).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Minus = Token.EqualTo(SqlToken.Minus).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Asterisk = Token.EqualTo(SqlToken.Asterisk).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            ForwardSlash = Token.EqualTo(SqlToken.ForwardSlash).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Percent = Token.EqualTo(SqlToken.Percent).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Caret = Token.EqualTo(SqlToken.Caret).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Lte = Token.EqualTo(SqlToken.LessThanOrEqual).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Lt = Token.EqualTo(SqlToken.LessThan).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Gt = Token.EqualTo(SqlToken.GreaterThan).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Gte = Token.EqualTo(SqlToken.GreaterThanOrEqual).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Eq = Token.EqualTo(SqlToken.Equal).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-            Neq = Token.EqualTo(SqlToken.NotEqual).Select(x => SqlNodeFactory.CaptureToken<SqlOperatorNode>(x));
-        }
 
         protected void InitKeywords()
         {
@@ -410,5 +404,8 @@ namespace SQLGrip.ParserTree.ANSI.Version92
             return Statement.AtEnd().Parse(input);
         }
 
+        */
+
+        
     }
 }

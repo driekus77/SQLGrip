@@ -1,85 +1,84 @@
 using SQLGrip;
 
-namespace SQLGrip.ParserTree.ANSI.Version92
+namespace SQLGrip.Parsers
 {
 
-    [Language(name: "SQL", dialect: "ANSI", version: "92", subject: "Tokens")]
     public enum SqlToken
     {
 
         [Token(Category = "", Description = "When none of the Tokens match.", Example = "null")]
-        None = 0,
+        NONE = 0,
 
 
         [Token(Text = " ", Category = "characters", Description = "Matched whitespaces.")]
-        WhiteSpace,
+        WHITESPACE,
         [Token(Text = "[\\s]", Category = "characters", Description = "Matched text.")]
-        String,
+        STRING,
 
         [Token(Text = "[\\s]", Category = "characters", Description = "Matched Identifier.")]
-        Identifier,
+        IDENTIFIER,
         [Token(Text = "[\\s]", Category = "characters", Description = "Matched built-in identifier.")]
-        BuiltInIdentifier,
+        BUILTIN_IDENTIFIER,
         [Token(Text = "[\\s]", Category = "characters", Description = "Matched RegularExpression.")]
-        RegularExpression,
+        REGULAR_EXPRESSION,
 
 
         [Token(Text = "[0-9]", Category = "numeric", Description = "Matched decimal number.")]
-        Number,
+        NUMBER_NUMERIC,
         [Token(Text = "[0-9A-Fa-f]", Category = "numeric", Description = "Matched hexadecimal number.")]
-        HexNumber,
+        HEX_NUMBER_NUMERIC,
 
         [Token(Text = "'", Category = "characters", Description = "Matched single quote.")]
-        Quote,
+        QUOTE,
         [Token(Text = "\"", Category = "characters", Description = "Matched double quote.")]
-        DoubleQuote,
+        DOUBLEQUOTE,
         [Token(Text = ",", Category = "characters", Description = "Matches comma.")]
-        Comma,
+        COMMA,
         [Token(Text = ".", Category = "last_resort", Description = "Matches Period.")]
-        Period,
+        PERIOD,
         [Token(Text = "[", Category = "last_resort", Description = "Matches LeftBracket.")]
-        LeftBracket,
+        LEFTBRACKET,
         [Token(Text = "]", Category = "last_resort", Description = "Matches RightBracket.")]
-        RightBracket,
+        RIGHTBRACKET,
         [Token(Text = "(", Category = "last_resort", Description = "Matches LeftParen.")]
-        LeftParen,
+        LEFTPAREN,
         [Token(Text = ")", Category = "last_resort", Description = "Matches RightParen.")]
-        RightParen,
+        RIGHTPAREN,
         [Token(Text = "?", Category = "last_resort", Description = "Matches QuestionMark.")]
-        QuestionMark,
+        QUESTIONMARK,
         [Token(Text = "|", Category = "last_resort", Description = "Matches VerticalBar.")]
-        VerticalBar,
+        VERTICALBAR,
         [Token(Text = "_", Category = "last_resort", Description = "Matches Underscore.")]
-        Underscore,
+        UNDERSCORE,
         [Token(Text = ":", Category = "last_resort", Description = "Matches Colon.")]
-        Colon,
+        COLON,
         [Token(Text = ";", Category = "last_resort", Description = "Matches Semicolon.")]
-        Semicolon,
+        SEMICOLON,
 
         [Token(Text = "+", Category = "operator", Description = "Matches Plus.")]
-        Plus,
+        PLUS,
         [Token(Text = "-", Category = "operator", Description = "Matches Minus.")]
-        Minus,
+        MINUS,
         [Token(Text = "*", Category = "operator", Description = "Matches Asterisk.")]
-        Asterisk,
+        ASTERISK,
         [Token(Text = "/", Category = "operator", Description = "Matches ForwardSlash.")]
-        ForwardSlash,
+        FORWARD_SLASH,
         [Token(Text = "%", Category = "operator", Description = "Matches Percent.")]
-        Percent,
+        PERCENT,
         [Token(Text = "^", Category = "operator", Description = "Matches Caret.")]
-        Caret,
+        CARET,
         [Token(Text = "<", Category = "operator", Description = "Matches LessThan.")]
-        LessThan,
+        LESS_THAN,
         [Token(Text = "<=", Category = "operator", Description = "Matches LessThanOrEqual.")]
-        LessThanOrEqual,
+        LESS_THAN_OR_EQUAL,
         [Token(Text = ">", Category = "operator", Description = "Matches GreaterThan.")]
-        GreaterThan,
+        GREATER_THAN,
         [Token(Text = ">=", Category = "operator", Description = "Matches GreaterThanOrEqual.")]
-        GreaterThanOrEqual,
+        GREATER_THAN_OR_EQUAL,
         [Token(Text = "=", Category = "operator", Description = "Matches Equal.")]
-        Equal,
+        EQUAL,
         [Token(Text = "<>", Category = "operator", Description = "Matches NotEqual.")]
-        NotEqual,
+        NOT_EQUAL,
 
 
         // A

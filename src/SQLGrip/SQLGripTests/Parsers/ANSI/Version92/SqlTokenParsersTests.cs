@@ -1,5 +1,5 @@
 using SQLGrip;
-using SQLGrip.ParserTree;
+using SQLGrip.Parsers.ANSI.Version92;
 using SQLGrip.SyntaxTree.Nodes;
 using SQLGrip.SyntaxTree.Extensions;
 using Superpower;
@@ -8,7 +8,7 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace SQLGripTests.ParserTree
+namespace SQLGripTests.Parsers.ANSI.Version92
 {
     public class SqlTokenParsersTests
     {
@@ -16,7 +16,7 @@ namespace SQLGripTests.ParserTree
 
         SqlTokenParsers SqlTokenParsers { get; } = new SqlTokenParsers();
 
-
+/*
         [Fact]
         public void WSTest()
         {
@@ -256,6 +256,6 @@ namespace SQLGripTests.ParserTree
 
         }
 
-
+        */
     }
 }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SQLGrip.ParserTree
+namespace SQLGrip.Parsers.ANSI.Version92
 {
     public class SqlParser
     {
@@ -18,7 +18,7 @@ namespace SQLGrip.ParserTree
         {
             var tokens = Tokenizer.Tokenize(input);
 
-            return TokenParsers.DoParse(tokens);
+            return null;//TokenParsers.DoParse(tokens);
         }
     }
 }

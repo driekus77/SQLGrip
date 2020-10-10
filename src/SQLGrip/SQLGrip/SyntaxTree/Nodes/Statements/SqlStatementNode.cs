@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SQLGrip.ParserTree;
+using SQLGrip.Parsers;
 using Superpower;
 
 namespace SQLGrip.SyntaxTree.Nodes
