@@ -13,6 +13,12 @@ namespace SQLGrip.SyntaxTree.Nodes
 
         public string Name { get; protected set; }
 
+        public TextSpan Span { get; set; }
+
+        public SqlNode LeftNode { get; set; }
+
+        public SqlNode RightNode { get; set; }
+
 
         public SqlNode Named(string name)
         {
@@ -28,5 +34,9 @@ namespace SQLGrip.SyntaxTree.Nodes
         }
 
 
+        public override string ToString()
+        {
+            return Span.ToStringValue();
+        }
     }
 }

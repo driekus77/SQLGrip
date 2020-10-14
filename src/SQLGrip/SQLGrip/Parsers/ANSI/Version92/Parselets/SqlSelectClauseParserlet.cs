@@ -16,30 +16,31 @@ namespace SQLGrip.Parsers.ANSI.Version92.Parselets
     {
         // SelectClause Parsers
         public static readonly TokenListParser<SqlToken, SqlKeywordNode> SELECT =
-                Token.EqualTo(SqlToken.SELECT).Select(x => new SqlKeywordNode{ Keyword = x.Span });
+                Token.EqualTo(SqlToken.SELECT).Select(x => new SqlKeywordNode{ Span = x.Span })
+                .Named("select");
 
             
         public static readonly TokenListParser<SqlToken, SqlIdentifierNode> SCHEMA_NAME =
                 Token.EqualTo(SqlToken.IDENTIFIER)
-                    .Select(x => new SqlIdentifierNode{ Identifier = x.Span })
+                    .Select(x => new SqlIdentifierNode{ Span = x.Span })
                     .Named("schema-name");
 
 
         public static readonly TokenListParser<SqlToken, SqlIdentifierNode> TABLE_OR_ALIAS_NAME =
                  Token.EqualTo(SqlToken.IDENTIFIER)
-                    .Select(x => new SqlIdentifierNode{ Identifier = x.Span })
-                    .Named("table-alias");
+                    .Select(x => new SqlIdentifierNode{ Span = x.Span })
+                    .Named("table-or-alias-name");
 
 
        public static readonly TokenListParser<SqlToken, SqlIdentifierNode> COLUMN_NAME = 
                 Token.EqualTo(SqlToken.IDENTIFIER)
-                    .Select(x => new SqlIdentifierNode{ Identifier = x.Span })
-                    .Named("select-column-name");
+                    .Select(x => new SqlIdentifierNode{ Span = x.Span })
+                    .Named("column-name");
 
         public static readonly TokenListParser<SqlToken, SqlIdentifierNode> COLUMN_EXPRESSION_ALIAS =
                 Token.EqualTo(SqlToken.IDENTIFIER)
-                    .Select(x => new SqlIdentifierNode{ Identifier = x.Span })
-                    .Named("select-column-alias");
+                    .Select(x => new SqlIdentifierNode{ Span = x.Span })
+                    .Named("column-expression-alias");
 
         public static readonly TokenListParser<SqlToken, SqlColumnExpressionNode> COLUMN_EXPRESSION = 
                 (
@@ -58,7 +59,7 @@ namespace SQLGrip.Parsers.ANSI.Version92.Parselets
                 .Then(n => _.WHITESPACE.Select(w => { n.Whitespace2 = w.Span; return n; }).OptionalOrDefault(n)
                 .Then(n => COLUMN_EXPRESSION_ALIAS.Select(ca => { n.ColumnAlias = ca; return n; }).OptionalOrDefault(n)))
                 .Then(n => _.WHITESPACE.Select(w => { n.Whitespace3 = w.Span; return n; }).OptionalOrDefault(n))
-                .Named("select-column-expression");
+                .Named("column-expression");
 
 
         public static readonly TokenListParser<SqlToken, SqlColumnExpressionListNode> COLUMN_EXPRESSION_LIST =
@@ -73,35 +74,16 @@ namespace SQLGrip.Parsers.ANSI.Version92.Parselets
                     return ce;
                 }))).Many()
                     .Select(remainingCols => { result.AddRange(remainingCols); return result; }))
-             
-            .Named("select-column-list-expression");
+            .Named("column-expression-list");
 
-            /*
-                    from remainder in (   
-                        from comma in _.COMMA
-                        from ws2 in _.WHITESPACE.OptionalOrDefault()
-                        from colexpr_next in COLUMN_EXPRESSION
-                        from ws3 in _.WHITESPACE
-                        select new SqlColumnExpressionListItemNode { 
-                                    Comma = comma, 
-                                    Whitespace1 = ws2.Span, 
-                                    SchemaName = colexpr_next.SchemaName,
-                                    TableOrAliasName = colexpr_next.TableOrAliasName,
-                                    ColumnName = colexpr_next.ColumnName }).Many()
-                    select new SqlColumnExpressionListNode{
-                                    new SqlColumnExpressionListItemNode{ 
-                                        SchemaName = colexpr.SchemaName,
-                                        TableOrAliasName = colexpr.TableOrAliasName,
-                                        ColumnName = colexpr.ColumnName}})
-                    .Named("select-column-expressionlist");
-        */
+
 
         public static readonly TokenListParser<SqlToken, SqlSelectClauseNode> SELECT_CLAUSE =
-                SELECT.Select(kw => new SqlSelectClauseNode { Keyword = kw.Keyword})
+                SELECT.Select(kw => new SqlSelectClauseNode { Span = kw.Span})
                 .Then(result => _.WHITESPACE.Select(ws1 => { result.Whitespace1 = ws1.Span; return result; }))
                 .Then(result => _op.ASTERISK.Select(so => { result.SelectList = new SqlColumnExpressionListNode{Asterisk = so.Operator.EqualsValue("*")}; return result; })
                     .Or(COLUMN_EXPRESSION_LIST.Select(ce => { result.SelectList = ce; ce.Asterisk = false; return result; })))
-                .Named("selectclause");
+                .Named("select-clause");
 
     }
 

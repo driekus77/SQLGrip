@@ -12,18 +12,18 @@ namespace SQLGrip.Parsers.ANSI.Version92.Parselets
     {
         // Capture keywords
         public static readonly TokenListParser<SqlToken, SqlKeywordNode> AND =
-            Token.EqualTo(SqlToken.AND).Select(x => new SqlKeywordNode{ Keyword = x.Span });
+            Token.EqualTo(SqlToken.AND).Select(x => new SqlKeywordNode{ Span = x.Span });
         public static readonly TokenListParser<SqlToken, SqlKeywordNode> OR =
-            Token.EqualTo(SqlToken.OR).Select(x => new SqlKeywordNode{ Keyword = x.Span });
+            Token.EqualTo(SqlToken.OR).Select(x => new SqlKeywordNode{ Span = x.Span });
         public static readonly TokenListParser<SqlToken, SqlKeywordNode> NOT =
-            Token.EqualTo(SqlToken.NOT).Select(x => new SqlKeywordNode{ Keyword = x.Span });
+            Token.EqualTo(SqlToken.NOT).Select(x => new SqlKeywordNode{ Span = x.Span });
         public static readonly TokenListParser<SqlToken, SqlKeywordNode> LIKE =
-            Token.EqualTo(SqlToken.LIKE).Select(x => new SqlKeywordNode{ Keyword = x.Span });
+            Token.EqualTo(SqlToken.LIKE).Select(x => new SqlKeywordNode{ Span = x.Span });
         public static readonly TokenListParser<SqlToken, SqlKeywordNode> IN =
-            Token.EqualTo(SqlToken.IN).Select(x => new SqlKeywordNode{ Keyword = x.Span });
+            Token.EqualTo(SqlToken.IN).Select(x => new SqlKeywordNode{ Span = x.Span });
         public static readonly TokenListParser<SqlToken, SqlKeywordNode> IS =
-            Token.EqualTo(SqlToken.IS).Select(x => new SqlKeywordNode{ Keyword = x.Span });
+            Token.EqualTo(SqlToken.IS).Select(x => new SqlKeywordNode{ Span = x.Span });
         public static readonly TokenListParser<SqlToken, SqlKeywordNode> AS =
-            Token.EqualTo(SqlToken.AS).Select(x => new SqlKeywordNode{ Keyword = x.Span });
+            Token.EqualTo(SqlToken.AS).Select(x => new SqlKeywordNode{ Span = x.Span });
     }
 }

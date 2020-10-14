@@ -64,7 +64,7 @@ namespace SQLGripTests.Parsers.ANSI.Version92
             var tokens = SqlTokenizer.Tokenize("And");
             var result = SqlKeywordParselet.AND.Parse(tokens);
             Assert.IsType<SqlKeywordNode>(result);
-            Assert.Equal("And", result.Keyword.ToStringValue());
+            Assert.Equal("And", result.Span.ToStringValue());
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace SQLGripTests.Parsers.ANSI.Version92
             var tokens = SqlTokenizer.Tokenize("or");
             var result = SqlKeywordParselet.OR.Parse(tokens);
             Assert.IsType<SqlKeywordNode>(result);
-            Assert.Equal("or", result.Keyword.ToStringValue());
+            Assert.Equal("or", result.Span.ToStringValue());
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace SQLGripTests.Parsers.ANSI.Version92
             var tokens = SqlTokenizer.Tokenize("select");
             var result = SqlSelectClauseParselet.SELECT.Parse(tokens);
             Assert.IsType<SqlKeywordNode>(result);
-            Assert.Equal("select", result.Keyword.ToStringValue());
+            Assert.Equal("select", result.Span.ToStringValue());
         }
 
         /*
