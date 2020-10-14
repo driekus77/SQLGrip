@@ -1,5 +1,6 @@
 using SQLGrip;
 using SQLGrip.Parsers.ANSI.Version92;
+using SQLGrip.Parsers.ANSI.Version92.Parselets;
 using SQLGrip.SyntaxTree.Nodes;
 using SQLGrip.SyntaxTree.Extensions;
 using Superpower;
@@ -14,73 +15,87 @@ namespace SQLGripTests.Parsers.ANSI.Version92
     {
         SqlTokenizer SqlTokenizer { get; } = new SqlTokenizer();
 
-        SqlTokenParsers SqlTokenParsers { get; } = new SqlTokenParsers();
 
-/*
         [Fact]
         public void WSTest()
         {
             var tokens = SqlTokenizer.Tokenize(" \t\n\r");
-
-            var result = SqlTokenParsers.WS.Parse(tokens);
+            var result = SqlGeneralParselet.WHITESPACE.Parse(tokens);
 
             Assert.IsType<SqlWhitespaceNode>(result);
-            Assert.Equal(" \t\n\r", result.CapturedToken.ToStringValue());
+            Assert.Equal(" \t\n\r", result.Span.ToStringValue());
         }
 
+
         [Fact]
-        public void OperatorsTest()
+        public void OperatorPlusTest()
         {
             var tokens = SqlTokenizer.Tokenize("+");
-            var result = SqlTokenParsers.Plus.Parse(tokens);
-
+            var result = SqlOperatorParselet.PLUS.Parse(tokens);
             Assert.IsType<SqlOperatorNode>(result);
-            Assert.Equal("+", result.CapturedToken.ToStringValue());
-
-
-            tokens = SqlTokenizer.Tokenize("<>");
-            result = SqlTokenParsers.Neq.Parse(tokens);
-
-            Assert.IsType<SqlOperatorNode>(result);
-            Assert.Equal("<>", result.CapturedToken.ToStringValue());
-
-
-            tokens = SqlTokenizer.Tokenize("<");
-            result = SqlTokenParsers.Lt.Parse(tokens);
-
-            Assert.IsType<SqlOperatorNode>(result);
-            Assert.Equal("<", result.CapturedToken.ToStringValue());
+            Assert.Equal("+", result.Operator.ToStringValue());
         }
 
         [Fact]
-        public void KeywordsTest()
+        public void OperatorNotEqualTest()
+        {
+            var tokens = SqlTokenizer.Tokenize("<>");
+            var result = SqlOperatorParselet.NOT_EQUAL.Parse(tokens);
+            Assert.IsType<SqlOperatorNode>(result);
+            Assert.Equal("<>", result.Operator.ToStringValue());
+        }
+
+
+        [Fact]
+        public void OperatorLessThanTest()
+        {
+            var tokens = SqlTokenizer.Tokenize("<");
+            var result = SqlOperatorParselet.LESS_THAN.Parse(tokens);
+            Assert.IsType<SqlOperatorNode>(result);
+            Assert.Equal("<", result.Operator.ToStringValue());
+        }
+
+
+
+
+        [Fact]
+        public void Keyword_AND_Test()
         {
             var tokens = SqlTokenizer.Tokenize("And");
-            var result = SqlTokenParsers.And.Parse(tokens);
+            var result = SqlKeywordParselet.AND.Parse(tokens);
             Assert.IsType<SqlKeywordNode>(result);
-            Assert.Equal("And", result.CapturedToken.ToStringValue());
+            Assert.Equal("And", result.Keyword.ToStringValue());
+        }
 
-            tokens = SqlTokenizer.Tokenize("or");
-            result = SqlTokenParsers.Or.Parse(tokens);
+        [Fact]
+        public void Keyword_OR_Test()
+        {
+            var tokens = SqlTokenizer.Tokenize("or");
+            var result = SqlKeywordParselet.OR.Parse(tokens);
             Assert.IsType<SqlKeywordNode>(result);
-            Assert.Equal("or", result.CapturedToken.ToStringValue());
+            Assert.Equal("or", result.Keyword.ToStringValue());
+        }
 
-            tokens = SqlTokenizer.Tokenize("select");
-            result = SqlTokenParsers.Select.Parse(tokens);
+        [Fact]
+        public void Keyword_SELECT_Test()
+        {
+            var tokens = SqlTokenizer.Tokenize("select");
+            var result = SqlSelectClauseParselet.SELECT.Parse(tokens);
             Assert.IsType<SqlKeywordNode>(result);
-            Assert.Equal("select", result.CapturedToken.ToStringValue());
+            Assert.Equal("select", result.Keyword.ToStringValue());
+        }
 
+        /*
             tokens = SqlTokenizer.Tokenize("From");
-            result = SqlTokenParsers.From.Parse(tokens);
+            result = SqlFromClauseParselet.FROM.Parse(tokens);
             Assert.IsType<SqlKeywordNode>(result);
             Assert.Equal("From", result.CapturedToken.ToStringValue());
 
             tokens = SqlTokenizer.Tokenize("WHERE");
-            result = SqlTokenParsers.Where.Parse(tokens);
+            result = SqlWhereClauseParselet.WHERE.Parse(tokens);
             Assert.IsType<SqlKeywordNode>(result);
             Assert.Equal("WHERE", result.CapturedToken.ToStringValue());
         }
-
 
         [Fact]
         public void SimpleSelectTest()

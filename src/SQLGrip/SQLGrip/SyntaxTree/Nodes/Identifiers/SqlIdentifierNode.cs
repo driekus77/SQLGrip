@@ -7,12 +7,12 @@ namespace SQLGrip.SyntaxTree.Nodes
 {
     public class SqlIdentifierNode : SqlNode
     {
-        public override Type NodeType => typeof(SqlIdentifierNode);
+        public TextSpan Identifier {get;set;}
 
-
-        public SqlIdentifierNode(Token<SqlToken> capturedToken)
-            : base(capturedToken)
+        public override string ToString()
         {
+            return Identifier.ToStringValue();
         }
+
     }
 }

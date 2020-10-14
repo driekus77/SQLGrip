@@ -36,6 +36,8 @@ namespace SQLGrip.Parsers.ANSI.Version92
 
         static SqlTokenizer()
         {
+            FillTables();
+
             SimpleOps['+'] = SqlToken.PLUS;
             SimpleOps['-'] = SqlToken.MINUS;
             SimpleOps['*'] = SqlToken.ASTERISK;
@@ -192,21 +194,33 @@ namespace SQLGrip.Parsers.ANSI.Version92
         static readonly Dictionary<string, TokenAttribute> TokenTable = new Dictionary<string, TokenAttribute>(StringComparer.InvariantCultureIgnoreCase);
         static readonly Dictionary<string, SqlToken> Keywords = new Dictionary<string, SqlToken>(StringComparer.InvariantCultureIgnoreCase);
 
+        static readonly object table_lock = new object();
+
 
         static void FillTables()
         {
             if ( TokenTable.Count == 0 )
             {
-                foreach ( SqlToken enumValue in typeof(SqlToken).GetEnumValues() )
+                lock ( table_lock ) 
                 {
-                    var enumName = enumValue.ToString();
-                    var memberInfo = typeof(SqlToken).GetMember(enumName).FirstOrDefault();
-                    var tokenAttribute = (TokenAttribute)memberInfo.GetCustomAttribute(typeof(TokenAttribute), false);
-                    TokenTable[enumName] = tokenAttribute;
-
-                    if ( tokenAttribute.Category.Equals("keyword", StringComparison.InvariantCultureIgnoreCase) )
+                    if ( TokenTable.Count == 0 )
                     {
-                        Keywords[tokenAttribute.Text] = enumValue;
+                        foreach ( SqlToken enumValue in typeof(SqlToken).GetEnumValues() )
+                        {
+                            var enumName = enumValue.ToString();
+                            var memberInfo = typeof(SqlToken).GetMember(enumName).FirstOrDefault();
+                            var tokenAttribute = (TokenAttribute)memberInfo.GetCustomAttribute(typeof(TokenAttribute), false);
+                            
+                            if ( !String.IsNullOrWhiteSpace(enumName) && tokenAttribute != null )
+                            {
+                                TokenTable[enumName] = tokenAttribute;
+
+                                if ( tokenAttribute.Category.Equals("keyword", StringComparison.InvariantCultureIgnoreCase) )
+                                {
+                                    Keywords[tokenAttribute.Text] = enumValue;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -215,9 +229,6 @@ namespace SQLGrip.Parsers.ANSI.Version92
 
         static bool TryGetKeyword(TextSpan span, out SqlToken keyword)
         {
-            // First time fill Keywords if empty
-            FillTables();
-
             if ( Keywords.ContainsKey(span.ToStringValue()) )
             {
                 keyword = Keywords[span.ToStringValue()];

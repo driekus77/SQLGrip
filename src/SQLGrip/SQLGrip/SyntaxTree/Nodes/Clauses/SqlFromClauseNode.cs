@@ -1,12 +1,9 @@
-﻿using SQLGrip.Parsers;
-using Superpower;
-using System;
+﻿using System;
 
 namespace SQLGrip.SyntaxTree.Nodes
 {
-    public class SqlFromClauseNode : SqlClauseNode
+    public class SqlFromClauseNode : SqlNode
     {
-        public override Type NodeType { get => typeof(SqlFromClauseNode); }
 
     }
 }

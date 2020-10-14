@@ -7,14 +7,12 @@ namespace SQLGrip.SyntaxTree.Nodes
 {
     public class SqlKeywordNode : SqlNode
     {
-        public override Type NodeType => typeof(SqlKeywordNode);
+        public TextSpan Keyword { get; set; }
 
-        public SqlKeywordNode(Token<SqlToken> capturedToken)
-            : base(capturedToken)
+        public override string ToString()
         {
+            return Keyword.ToStringValue();
         }
-
-
 
     }
 }

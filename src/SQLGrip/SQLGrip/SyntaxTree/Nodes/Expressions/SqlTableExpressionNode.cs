@@ -1,14 +1,10 @@
-﻿using SQLGrip.Parsers;
-using Superpower;
-using System;
+﻿using Superpower.Model;
 
 namespace SQLGrip.SyntaxTree.Nodes
 {
     public class SqlTableExpressionNode : SqlNode
     {
-        public override Type NodeType => typeof(SqlTableExpressionNode);
 
-
-        public override TokenListParser<SqlToken, SqlNode> Parser => throw new NotImplementedException();
+        
     }
 }

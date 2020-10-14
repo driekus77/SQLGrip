@@ -96,7 +96,7 @@ namespace SQLGrip.Parsers
         ALLOCATE,
         [Token(Text = "ALTER", Category = "keyword", Description = "When keyword matches.", Example = "")]
         ALTER,
-        [Token(Text = "AND", Category = "operand", Description = "When keyword matches.", Example = "")]
+        [Token(Text = "AND", Category = "keyword", Description = "When keyword matches.", Example = "")]
         AND,
         [Token(Text = "ANY", Category = "keyword", Description = "When keyword matches.", Example = "")]
         ANY,

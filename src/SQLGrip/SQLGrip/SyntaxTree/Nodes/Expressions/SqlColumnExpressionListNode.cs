@@ -1,14 +1,18 @@
-﻿using System;
-using SQLGrip.Parsers;
-using Superpower;
-using SQLGrip.SyntaxTree.Nodes;
+﻿using System.Collections.Generic;
 
 
 namespace SQLGrip.SyntaxTree.Nodes
 {
-    public class SqlColumnExpressionListNode : SqlNode
-    {
-        public override Type NodeType => typeof(SqlColumnExpressionListNode);
 
+    public class SqlColumnExpressionListNode : SqlListNode<SqlColumnExpressionNode>
+    {
+
+        public bool Asterisk {get;set;}
+
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

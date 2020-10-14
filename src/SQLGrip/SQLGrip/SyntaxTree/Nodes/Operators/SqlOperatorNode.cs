@@ -7,16 +7,12 @@ namespace SQLGrip.SyntaxTree.Nodes
 {
     public class SqlOperatorNode : SqlNode
     {
-        public override Type NodeType => typeof(SqlOperatorNode);
+        public TextSpan Operator {get; set;}
 
-        public override TokenListParser<SqlToken, SqlNode> Parser => throw new NotImplementedException();
 
-        public SqlOperatorNode(Token<SqlToken> capturedToken)
-            : base(capturedToken)
+        public override string ToString()
         {
+            return Operator.ToStringValue();
         }
-
-
-
     }
 }

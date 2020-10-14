@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using SQLGrip.Parsers;
-using Superpower;
+﻿using System.Text;
 
 namespace SQLGrip.SyntaxTree.Nodes
 {
     public class SqlStatementNode : SqlNode
     {
-        public override Type NodeType => typeof(SqlStatementNode);
+
+        public SqlSelectStatementNode SelectStatement {get;set;}
 
 
-        public SqlSelectClauseNode SelectClause => Children[0] as SqlSelectClauseNode;
 
-        public SqlFromClauseNode FromClause => Children[1] as SqlFromClauseNode;
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
 
-        public SqlWhereClauseNode WhereClause => Children[2] as SqlWhereClauseNode;
 
-        //public SqlGroupByClauseNode GroupByClause => throw new NotImplementedException();
+            if ( SelectStatement != null )
+            {
+                sb.Append(SelectStatement.ToString());
+            }
 
-        //public SqlOrderByClauseNode OrderByClause => throw new NotImplementedException();
-
+            return sb.ToString();
+        }
     }
 }

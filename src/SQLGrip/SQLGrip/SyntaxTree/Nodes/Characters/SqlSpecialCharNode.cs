@@ -8,13 +8,12 @@ namespace SQLGrip.SyntaxTree.Nodes
 {
     public class SqlSpecialCharactersNode : SqlNode
     {
-        public override Type NodeType => typeof(SqlSpecialCharactersNode);
+        public TextSpan Span {get;set;}
 
-        
-        public SqlSpecialCharactersNode(Token<SqlToken> capturedToken)
-            : base(capturedToken)
+
+        public override string ToString()
         {
+            return Span.ToStringValue();
         }
-
     }
 }

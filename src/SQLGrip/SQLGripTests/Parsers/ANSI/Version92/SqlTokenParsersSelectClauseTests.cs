@@ -1,5 +1,6 @@
 using SQLGrip;
 using SQLGrip.Parsers.ANSI.Version92;
+using SQLGrip.Parsers.ANSI.Version92.Parselets;
 using SQLGrip.SyntaxTree.Nodes;
 using Superpower;
 using Superpower.Model;
@@ -13,246 +14,115 @@ namespace SQLGripTests.Parsers.ANSI.Version92
     {
         SqlTokenizer SqlTokenizer { get; } = new SqlTokenizer();
 
-        SqlTokenParsers SqlTokenParsers { get; } = new SqlTokenParsers();
 
-
-/*
   
         [Fact]
-        public void AsteriksTest()
+        public void Keyword_SELECT_Test()
         {
-            var tokens = SqlTokenizer.Tokenize("SELECT *");
-            var result = SqlTokenParsers.SelectClause.TryParse(tokens);
+            var tokens = SqlTokenizer.Tokenize("SELECT");
+            var result = SqlSelectClauseParselet.SELECT.Parse(tokens);
 
-            Assert.True(result.HasValue);
-            Assert.True(result.ErrorPosition.Equals(Position.Empty));
-            Assert.IsType<SqlSelectClauseNode>(result.Value);
-            var resultClause = (SqlSelectClauseNode)result.Value;
-            Assert.Equal(3, resultClause.Children.Count);
-
-            Assert.Equal("SELECT", resultClause.Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(" ", resultClause.Children[1].CapturedToken.ToStringValue());
-            Assert.Equal("*", resultClause.Children[2].CapturedToken.ToStringValue());
-        }
-
-        [Fact]
-        public void SingleColumnTest()
-        {
-            var tokens = SqlTokenizer.Tokenize("SELECT FirstName");
-            var result = SqlTokenParsers.SelectClause.TryParse(tokens);
-
-            Assert.True(result.HasValue);
-            Assert.True(result.ErrorPosition.Equals(Position.Empty));
-            Assert.IsType<SqlSelectClauseNode>(result.Value);
-            var resultClause = (SqlSelectClauseNode)result.Value;
-            Assert.Equal(3, resultClause.Children.Count);
-
-            Assert.Equal("SELECT", resultClause.Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(" ", resultClause.Children[1].CapturedToken.ToStringValue());
-
-            Assert.IsType<SqlColumnExpressionListNode>(resultClause.Children[2]);
-            var listNode = (SqlColumnExpressionListNode)resultClause.Children[2];
-            Assert.NotEmpty(listNode.Children);
-
-            var columnName = Assert.IsType<SqlIdentifierNode>(listNode.Children[0].Children[0]);
-            Assert.Equal("FirstName", columnName.CapturedToken.ToStringValue());
-            Assert.Equal("SELECT-COLUMN-NAME", columnName.Name);
+            Assert.IsType<SqlKeywordNode>(result);
+            Assert.Equal("SELECT", result.Keyword.ToStringValue());
         }
 
 
         [Fact]
-        public void SingleColumnAliasTest()
+        public void Identifier_SCHEMA_NAME_Test()
         {
-            var tokens = SqlTokenizer.Tokenize("SELECT FirstName fn");
-            var result = SqlTokenParsers.SelectClause.TryParse(tokens);
+            var tokens = SqlTokenizer.Tokenize("myschema");
+            var result = SqlSelectClauseParselet.SCHEMA_NAME.Parse(tokens);
 
-            Assert.True(result.HasValue);
-            Assert.True(result.ErrorPosition.Equals(Position.Empty));
-            Assert.IsType<SqlSelectClauseNode>(result.Value);
-            var resultClause = (SqlSelectClauseNode)result.Value;
-            Assert.Equal(3, resultClause.Children.Count);
+            Assert.IsType<SqlIdentifierNode>(result);
 
-            Assert.Equal("SELECT", resultClause.Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(" ", resultClause.Children[1].CapturedToken.ToStringValue());
+            Assert.Equal("myschema", result.ToString());
+        }
 
-            Assert.IsType<SqlColumnExpressionListNode>(resultClause.Children[2]);
-            var listNode = (SqlColumnExpressionListNode)resultClause.Children[2];
-            Assert.NotEmpty(listNode.Children);
+        [Fact]
+        public void ColumnExpression_COLUMN_NAME_Tests()
+        {
+            var tokens = SqlTokenizer.Tokenize("firstCol");
+            var result = SqlSelectClauseParselet.COLUMN_EXPRESSION.Parse(tokens);
 
-            var column = Assert.IsType<SqlColumnExpressionNode>(listNode.Children[0]);
+            Assert.IsType<SqlColumnExpressionNode>(result);
 
-            var columnName = Assert.IsType<SqlIdentifierNode>(column.Children[0]);
-            Assert.Equal("FirstName", columnName.CapturedToken.ToStringValue());
-            Assert.Equal("SELECT-COLUMN-NAME", columnName.Name);
+            Assert.Equal("firstCol", result.ColumnName.Identifier.ToStringValue());
+        }
 
-            // var columnAlias = Assert.IsType<SqlIdentifierNode>(column.Children[2]);
-            // Assert.Equal("fn", columnAlias.CapturedToken.ToStringValue());
-            // Assert.Equal("SELECT-COLUMN-ALIAS", columnAlias.Name);
+        [Fact]
+        public void ColumnExpression__TABLE_OR_ALIAS_NAME__COLUMN_NAME_Tests()
+        {
+            var tokens = SqlTokenizer.Tokenize("mytable1.firstCol1");
+            var result = SqlSelectClauseParselet.COLUMN_EXPRESSION.Parse(tokens);
+
+            Assert.IsType<SqlColumnExpressionNode>(result);
+
+            Assert.Equal("mytable1", result.TableOrAliasName.ToString());
+            Assert.Equal("firstCol1", result.ColumnName.ToString());
+        }
+
+        [Fact]
+        public void ColumnExpression__SCHEMA_NAME__TABLE_OR_ALIAS_NAME__COLUMN_NAME_Tests()
+        {
+            var tokens = SqlTokenizer.Tokenize("myschema1.mytable1.firstCol1");
+            var result = SqlSelectClauseParselet.COLUMN_EXPRESSION.Parse(tokens);
+
+            Assert.IsType<SqlColumnExpressionNode>(result);
+
+            Assert.Equal("myschema1", result.SchemaName.ToString());
+            Assert.Equal("mytable1", result.TableOrAliasName.ToString());
+            Assert.Equal("firstCol1", result.ColumnName.ToString());
+        }
+
+        [Fact]
+        public void ColumnExpression__SCHEMA_NAME__TABLE_OR_ALIAS_NAME__COLUMN_NAME__WITH_ALIAS_Tests()
+        {
+            var tokens = SqlTokenizer.Tokenize("myschema1.mytable1.firstCol1\tfc1");
+            var result = SqlSelectClauseParselet.COLUMN_EXPRESSION.Parse(tokens);
+
+            Assert.IsType<SqlColumnExpressionNode>(result);
+
+            Assert.Equal("myschema1", result.SchemaName.ToString());
+            Assert.Equal("mytable1", result.TableOrAliasName.ToString());
+            Assert.Equal("firstCol1", result.ColumnName.ToString());
+
+            Assert.Equal("\t", result.Whitespace1.ToStringValue());
+            Assert.Equal("fc1", result.ColumnAlias.ToString());
         }
 
 
 
         [Fact]
-        public void SingleColumnWithTableAliasTest()
+        public void ColumnExpressionList__COLUMN_NAMES_Tests()
         {
-            var tokens = SqlTokenizer.Tokenize("SELECT tblA.FirstName");
-            var result = SqlTokenParsers.SelectClause.TryParse(tokens);
+            var input_text = @"FirstName   , 
+                               LastName    , 
+                               BirthDate   , 
+                               PhoneNumber ";
+            var tokens = SqlTokenizer.Tokenize(input_text);
+            var result = SqlSelectClauseParselet.COLUMN_EXPRESSION_LIST.Parse(tokens);
 
-            Assert.True(result.HasValue);
-            Assert.True(result.ErrorPosition.Equals(Position.Empty));
-            Assert.IsType<SqlSelectClauseNode>(result.Value);
-            var resultClause = (SqlSelectClauseNode)result.Value;
-            Assert.Equal(3, resultClause.Children.Count);
+            Assert.IsType<SqlColumnExpressionListNode>(result);
 
-            Assert.Equal("SELECT", resultClause.Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(" ", resultClause.Children[1].CapturedToken.ToStringValue());
+            Assert.Null(result[0].SchemaName);
+            Assert.Null(result[0].TableOrAliasName);
+            Assert.Equal("FirstName", result[0].ColumnName.Identifier.ToStringValue());
 
-            Assert.IsType<SqlColumnExpressionListNode>(resultClause.Children[2]);
-            var listNode = (SqlColumnExpressionListNode)resultClause.Children[2];
-            Assert.NotEmpty(listNode.Children);
+            Assert.Null(result[1].SchemaName);
+            Assert.Null(result[1].TableOrAliasName);
+            Assert.Equal("LastName", result[1].ColumnName.Identifier.ToStringValue());
 
-            var tableAlias = Assert.IsType<SqlIdentifierNode>(listNode.Children[0].Children[0]);
-            Assert.Equal("tblA", tableAlias.CapturedToken.ToStringValue());
-            Assert.Equal("SELECT-TABLE-REF", tableAlias.Name);
+            Assert.Null(result[2].SchemaName);
+            Assert.Null(result[2].TableOrAliasName);
+            Assert.Equal("BirthDate", result[2].ColumnName.Identifier.ToStringValue());
 
-            var columnName = Assert.IsType<SqlIdentifierNode>(listNode.Children[0].Children[2]);
-            Assert.Equal("FirstName", columnName.CapturedToken.ToStringValue());
-            Assert.Equal("SELECT-COLUMN-NAME", columnName.Name);
+            Assert.Null(result[3].SchemaName);
+            Assert.Null(result[3].TableOrAliasName);
+            Assert.Equal("PhoneNumber", result[3].ColumnName.Identifier.ToStringValue());
+
+            var resultText = result.ToString();
+            Assert.Equal(input_text, resultText );
         }
 
-
-        [Fact]
-        public void SingleColumnWithSchemaTest()
-        {
-            var tokens = SqlTokenizer.Tokenize("SELECT MyAccount.Users.FirstName");
-            var result = SqlTokenParsers.SelectClause.TryParse(tokens);
-
-            Assert.True(result.HasValue);
-            Assert.True(result.ErrorPosition.Equals(Position.Empty));
-            Assert.IsType<SqlSelectClauseNode>(result.Value);
-            var resultClause = (SqlSelectClauseNode)result.Value;
-            Assert.Equal(3, resultClause.Children.Count);
-
-            Assert.Equal("SELECT", resultClause.Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(" ", resultClause.Children[1].CapturedToken.ToStringValue());
-
-            Assert.IsType<SqlColumnExpressionListNode>(resultClause.Children[2]);
-            var listNode = (SqlColumnExpressionListNode)resultClause.Children[2];
-            Assert.NotEmpty(listNode.Children);
-
-            var schemaName = Assert.IsType<SqlIdentifierNode>(listNode.Children[0].Children[0]);
-            Assert.Equal("MyAccount", schemaName.CapturedToken.ToStringValue());
-            Assert.Equal("SELECT-SCHEMA-NAME", schemaName.Name);
-
-            var tableAlias = Assert.IsType<SqlIdentifierNode>(listNode.Children[0].Children[2]);
-            Assert.Equal("Users", tableAlias.CapturedToken.ToStringValue());
-            Assert.Equal("SELECT-TABLE-REF", tableAlias.Name);
-
-            var columnName = Assert.IsType<SqlIdentifierNode>(listNode.Children[0].Children[4]);
-            Assert.Equal("FirstName", columnName.CapturedToken.ToStringValue());
-            Assert.Equal("SELECT-COLUMN-NAME", columnName.Name);
-        }
-
-
-        [Fact]
-        public void ColumnListTest()
-        {
-            var tokens = SqlTokenizer.Tokenize("SELECT FirstName, LastName, Age");
-            var result = SqlTokenParsers.SelectClause.TryParse(tokens);
-
-            Assert.True(result.HasValue);
-            Assert.True(result.ErrorPosition.Equals(Position.Empty));
-            Assert.IsType<SqlSelectClauseNode>(result.Value);
-            var resultClause = (SqlSelectClauseNode)result.Value;
-            Assert.Equal(3, resultClause.Children.Count);
-
-            Assert.Equal("SELECT", resultClause.Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(" ", resultClause.Children[1].CapturedToken.ToStringValue());
-
-            Assert.IsType<SqlColumnExpressionListNode>(resultClause.Children[2]);
-            var listNode = (SqlColumnExpressionListNode)resultClause.Children[2];
-            Assert.Equal(7, listNode.Children.Count);
-            Assert.Equal("FirstName", listNode.Children[0].Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(",", listNode.Children[1].CapturedToken.ToStringValue());
-            Assert.Equal(" ", listNode.Children[2].CapturedToken.ToStringValue());
-            Assert.Equal("LastName", listNode.Children[3].Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(",", listNode.Children[4].CapturedToken.ToStringValue());
-            Assert.Equal(" ", listNode.Children[5].CapturedToken.ToStringValue());
-            Assert.Equal("Age", listNode.Children[6].Children[0].CapturedToken.ToStringValue());
-        }
-
-
-        [Fact]
-        public void ColumnAliasListTest()
-        {
-            var tokens = SqlTokenizer.Tokenize("SELECT FirstName fn, LastName ln, Age a");
-            var result = SqlTokenParsers.SelectClause.TryParse(tokens);
-
-            Assert.True(result.HasValue);
-            Assert.True(result.ErrorPosition.Equals(Position.Empty));
-            Assert.IsType<SqlSelectClauseNode>(result.Value);
-            var resultClause = (SqlSelectClauseNode)result.Value;
-            Assert.Equal(3, resultClause.Children.Count);
-
-            Assert.Equal("SELECT", resultClause.Children[0].CapturedToken.ToStringValue());
-            Assert.Equal(" ", resultClause.Children[1].CapturedToken.ToStringValue());
-
-            Assert.IsType<SqlColumnExpressionListNode>(resultClause.Children[2]);
-            var listNode = (SqlColumnExpressionListNode)resultClause.Children[2];
-            Assert.Equal(7, listNode.Children.Count);
-
-            // var firstColExpr = Assert.IsType<SqlColumnExpressionNode>(listNode.Children[0]);
-            // Assert.Equal("FirstName", firstColExpr.Children[0].CapturedToken.ToStringValue());
-            // Assert.Equal("fn", firstColExpr.Children[2].CapturedToken.ToStringValue());
-            // Assert.Equal("SELECT-COLUMN-ALIAS", firstColExpr.Children[2].Name);
-
-            // var secondColExpr = Assert.IsType<SqlColumnExpressionNode>(listNode.Children[3]);
-            // Assert.Equal("LastName", secondColExpr.Children[0].CapturedToken.ToStringValue());
-            // Assert.Equal("ln", secondColExpr.Children[2].CapturedToken.ToStringValue());
-            // Assert.Equal("SELECT-COLUMN-ALIAS", secondColExpr.Children[2].Name);
-
-            // var thirdColExpr = Assert.IsType<SqlColumnExpressionNode>(listNode.Children[6]);
-            // Assert.Equal("Age", thirdColExpr.Children[0].CapturedToken.ToStringValue());
-            // Assert.Equal("a", thirdColExpr.Children[2].CapturedToken.ToStringValue());
-            // Assert.Equal("SELECT-COLUMN-ALIAS", thirdColExpr.Children[2].Name);
-
-
-
-            // tokens = SqlTokenizer.Tokenize("SELECT FirstName as fn, LastName as ln, Age as a");
-            // result = SqlTokenParsers.SelectClause.TryParse(tokens);
-
-            // Assert.True(result.HasValue);
-            // Assert.True(result.ErrorPosition.Equals(Position.Empty));
-            // Assert.IsType<SqlSelectClauseNode>(result.Value);
-            // resultClause = (SqlSelectClauseNode)result.Value;
-            // Assert.Equal(3, resultClause.Children.Count);
-            // Assert.True(resultClause.Children.All(x => x.Parent.Equals(resultClause)));
-            // Assert.Equal("SELECT", resultClause.Children[0].CapturedToken.ToStringValue());
-            // Assert.Equal(" ", resultClause.Children[1].CapturedToken.ToStringValue());
-
-            // Assert.IsType<SqlColumnExpressionListNode>(resultClause.Children[2]);
-            // listNode = (SqlColumnExpressionListNode)resultClause.Children[2];
-            // Assert.Equal(7, listNode.Children.Count);
-
-            // firstColExpr = Assert.IsType<SqlColumnExpressionNode>(listNode.Children[0]);
-            // Assert.Equal("FirstName", firstColExpr.Children[0].CapturedToken.ToStringValue());
-            // Assert.Equal("as", firstColExpr.Children[2].CapturedToken.ToStringValue());
-            // Assert.Equal("fn", firstColExpr.Children[4].CapturedToken.ToStringValue());
-            // Assert.Equal("SELECT-COLUMN-ALIAS", firstColExpr.Children[4].Name);
-
-            // secondColExpr = Assert.IsType<SqlColumnExpressionNode>(listNode.Children[3]);
-            // Assert.Equal("LastName", secondColExpr.Children[0].CapturedToken.ToStringValue());
-            // Assert.Equal("as", secondColExpr.Children[2].CapturedToken.ToStringValue());
-            // Assert.Equal("ln", secondColExpr.Children[4].CapturedToken.ToStringValue());
-            // Assert.Equal("SELECT-COLUMN-ALIAS", secondColExpr.Children[4].Name);
-
-            // thirdColExpr = Assert.IsType<SqlColumnExpressionNode>(listNode.Children[6]);
-            // Assert.Equal("Age", thirdColExpr.Children[0].CapturedToken.ToStringValue());
-            // Assert.Equal("as", thirdColExpr.Children[2].CapturedToken.ToStringValue());
-            // Assert.Equal("a", thirdColExpr.Children[4].CapturedToken.ToStringValue());
-            // Assert.Equal("SELECT-COLUMN-ALIAS", thirdColExpr.Children[4].Name);
-        }
-
-        */
     }
 }
